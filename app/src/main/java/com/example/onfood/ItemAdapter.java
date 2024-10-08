@@ -25,7 +25,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         void onAddToCart(Item item);
     }
 
-    public ItemAdapter(List<Item> itemList, CartManager cartManager, OnAddToCartListener addToCartListener) {
+    public ItemAdapter(List<Item> itemList) {
         this.itemList = itemList;
         this.cartManager = cartManager;
         this.addToCartListener = addToCartListener;

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">On Food</string>
-     <string name="my_string">Hello, world!</string>
+    <string name="my_string">Hello, world!</string>
+    <string name="back_button">Back</string>
+    <string name="cart_button">Cart</string>
+    <string name="profile_button">Profile</string>
 </resources>

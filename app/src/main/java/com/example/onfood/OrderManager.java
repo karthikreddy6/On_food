@@ -1,9 +1,6 @@
 package com.example.onfood;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import java.util.HashMap;
-import java.util.Map;import android.content.Context;
+import android.content.Context;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
@@ -21,7 +18,7 @@ public class OrderManager {
     }
 
     // Place order in Firebase Realtime Database
-    public void placeOrder(String userId) {
+    public void placeOrder(String userId, OnOrderPlacedListener listener) {
         // Generate a unique Order ID
         String orderId = ordersRef.push().getKey();  // Generate unique order ID
 
@@ -42,17 +39,41 @@ public class OrderManager {
         Map<String, Object> orderDetails = new HashMap<>();
         orderDetails.put("userId", userId);
         orderDetails.put("amount", totalAmount);
-        orderDetails.put("items", cartItems);  // Add cart items
+
+        // Create a nested map to store items under "items" node
+        Map<String, Object> itemsMap = new HashMap<>();
+        int itemIndex = 1;
+
+        for (Map.Entry<String, CartItem> entry : cartItems.entrySet()) {
+            CartItem cartItem = entry.getValue();
+            Map<String, Object> itemDetails = new HashMap<>();
+            itemDetails.put("name", cartItem.getItem().getName());
+            itemDetails.put("price", cartItem.getItem().getPrice());
+            itemDetails.put("quantity", cartItem.getQuantity());
+
+            // Assign each item a unique key like "item1", "item2", etc.
+            itemsMap.put("item" + itemIndex, itemDetails);
+            itemIndex++;
+        }
+
+        // Add the items map to the order details
+        orderDetails.put("items", itemsMap);
 
         // Store the order in Firebase under Orders/Order ID
         ordersRef.child(orderId).setValue(orderDetails)
                 .addOnSuccessListener(aVoid -> {
                     // Successfully stored the order
                     System.out.println("Order placed successfully!");
+                    listener.onOrderPlaced(orderId);  // Notify listener with order ID
                 })
                 .addOnFailureListener(e -> {
                     // Failed to store the order
                     System.err.println("Error placing order: " + e.getMessage());
                 });
+    }
+
+    // Define interface for order placed listener
+    public interface OnOrderPlacedListener {
+        void onOrderPlaced(String orderId);
     }
 }

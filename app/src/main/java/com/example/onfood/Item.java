@@ -4,13 +4,14 @@ public class Item {
     private String id;
     private String name;
     private double price;
-    private String category;
+    private String category; // Category field
     private String imageUrl;
 
     public Item() {
         // Firestore requires a no-arg constructor
     }
 
+    // Getters and Setters
     public String getId() {
         return id;
     }
