@@ -1,0 +1,17 @@
+{
+  "Orders": {
+    "-O8flPnn1OL8C3T6YUb-": {
+      "amount": 330,
+      "items": {
+        "name": "idly",
+        "price": 50,
+        "quantity": 3,
+        "name": "dosa",
+        "price": 45,
+        "quantity": 4
+
+      },
+      "userId": "QcS0OeEoH4YMBl5kef9qJ65Nr2H3"
+    }
+  }
+}

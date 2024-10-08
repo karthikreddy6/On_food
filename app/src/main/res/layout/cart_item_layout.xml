@@ -1,0 +1,81 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <!-- Image of the item -->
+    <ImageView
+        android:id="@+id/cartItemImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center_vertical" />
+
+    <!-- Item details layout -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingStart="10dp">
+
+        <!-- Item Name -->
+        <TextView
+            android:id="@+id/cartItemName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Item Name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
+
+        <!-- Item Price -->
+        <TextView
+            android:id="@+id/cartItemPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price: $0.00"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray" />
+    </LinearLayout>
+
+    <!-- Quantity controls -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Decrease quantity button -->
+        <Button
+            android:id="@+id/decreaseQuantity"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="-"
+            android:textSize="20sp"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center" />
+
+        <!-- Quantity Text -->
+        <TextView
+            android:id="@+id/cartItemQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textSize="18sp"
+            android:padding="10dp"
+            android:gravity="center" />
+
+        <!-- Increase quantity button -->
+        <Button
+            android:id="@+id/increaseQuantity"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="+"
+            android:textSize="20sp"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "576989448271",
+    "project_id": "onfood-587eb",
+    "storage_bucket": "onfood-587eb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576989448271:android:5ec30b01872e7254fa823a",
+        "android_client_info": {
+          "package_name": "com.example.onfood"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz1IzZkXvTx6e6SLqyc5xDmdj4VTk1XMQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name" translatable="false">On Food</string>
+     <string name="my_string">Hello, world!</string>
+</resources>
