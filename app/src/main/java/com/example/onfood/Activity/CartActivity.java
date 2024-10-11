@@ -76,6 +76,7 @@ public class CartActivity extends AppCompatActivity {
                 intent.putExtra("ORDER_ID", orderId);
                 cartManager.clearCart();
                 startActivity(intent);
+                finish();
             });
 
         });
