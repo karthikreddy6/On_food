@@ -6,18 +6,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.onfood.Activity.OrderHistoryActivity;
-import com.example.onfood.Activity.ProfileActivity;
+import com.example.onfood.CartManager;
 import com.example.onfood.Item;
 import com.example.onfood.ItemAdapter;
 import com.example.onfood.R;
@@ -27,51 +28,49 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemListActivity extends AppCompatActivity {
+public class ItemListActivity extends AppCompatActivity implements ItemAdapter.OnAddToCartListener {
 
     private RecyclerView recyclerViewItems;
     private FirebaseFirestore db;
     private List<Item> itemList = new ArrayList<>();
     private Spinner categorySpinner;
     private ProgressBar progressBar;
-    public ImageButton buttonAddToCart,buttnprofil, buttonback;
+    private CartManager cartManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
-
         View navigationBar = getLayoutInflater().inflate(R.layout.navigation_bar, null);
         ((ViewGroup) findViewById(R.id.navigationContainer)).addView(navigationBar);
 
-        ImageButton buttonCart = findViewById(R.id.buttonCart);
-        ImageButton buttonprofil = findViewById(R.id.buttonProfile);
         ImageButton buttonback =findViewById(R.id.buttonBack);
-        TextView navText =findViewById(R.id.navtext);
+        ImageButton buttonCart = findViewById(R.id.buttonCart);
+        ImageButton buttonProfile = findViewById(R.id.buttonProfile);
+        TextView navText = findViewById(R.id.navtext);
         navText.setText("MENU ");
+        navText.setTextSize(20);
 
+        buttonback.setVisibility(View.GONE);
+        Button buttonGoToCart = findViewById(R.id.buttonGoToCart);
         recyclerViewItems = findViewById(R.id.recyclerViewItems);
         progressBar = findViewById(R.id.progressBar);
         recyclerViewItems.setLayoutManager(new LinearLayoutManager(this));
 
+        cartManager = CartManager.getInstance(this); // Initialize CartManager
 
         buttonCart.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, OrderHistoryActivity.class)));
-        buttonprofil.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, ProfileActivity.class)));
+        buttonProfile.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, ProfileActivity.class)));
 
         categorySpinner = findViewById(R.id.categorySpinner);
-        recyclerViewItems = findViewById(R.id.recyclerViewItems);
-        recyclerViewItems.setLayoutManager(new LinearLayoutManager(this));
-
-        db = FirebaseFirestore.getInstance();
-
         setupCategorySpinner();
         loadItemsFromFirestore();
+        buttonGoToCart.setOnClickListener(v -> gotoChart());
     }
 
     private void setupCategorySpinner() {
-        // Assuming you have predefined categories
-        String[] categories = {"All", "Category1", "Category2", "Category3"};
+        String[] categories = {"All", "Tiffen", "drinks", "Category3"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter);
@@ -91,9 +90,10 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
     private void loadItemsFromFirestore() {
+        db = FirebaseFirestore.getInstance();
         db.collection("MenuItem").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                itemList.clear(); // Clear the previous list
+                itemList.clear();
                 for (DocumentSnapshot doc : task.getResult()) {
                     Item item = doc.toObject(Item.class);
                     if (item != null) {
@@ -101,8 +101,9 @@ public class ItemListActivity extends AppCompatActivity {
                         itemList.add(item);
                     }
                 }
-                // Initially display all items
-                recyclerViewItems.setAdapter(new ItemAdapter(itemList));
+                // Pass the CartManager to the adapter
+                ItemAdapter adapter = new ItemAdapter(itemList, cartManager, this);
+                recyclerViewItems.setAdapter(adapter);
             } else {
                 Toast.makeText(ItemListActivity.this, "Failed to load items", Toast.LENGTH_SHORT).show();
             }
@@ -116,6 +117,18 @@ public class ItemListActivity extends AppCompatActivity {
                 filteredList.add(item);
             }
         }
-        recyclerViewItems.setAdapter(new ItemAdapter(filteredList));
+        recyclerViewItems.setAdapter(new ItemAdapter(filteredList, cartManager, this));
+    }
+
+    public void gotoChart() {
+        if (cartManager.getCartItemsWithQuantities().isEmpty()) {
+            Toast.makeText(this, "Cart is empty", Toast.LENGTH_SHORT).show();
+        } else {
+            startActivity(new Intent(ItemListActivity.this, CartActivity.class));
+        }
+    }
+    @Override
+    public void onAddToCart(Item item) {
+        // Handle the action after an item is added to the cart
     }
 }

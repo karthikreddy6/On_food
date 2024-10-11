@@ -15,17 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
     private List<Item> itemList;
-    private OnAddToCartListener addToCartListener;
     private CartManager cartManager;
+    private OnAddToCartListener addToCartListener;
 
     // Interface to notify activity when an item is added to the cart
     public interface OnAddToCartListener {
         void onAddToCart(Item item);
     }
 
-    public ItemAdapter(List<Item> itemList) {
+    public ItemAdapter(List<Item> itemList, CartManager cartManager, OnAddToCartListener addToCartListener) {
         this.itemList = itemList;
         this.cartManager = cartManager;
         this.addToCartListener = addToCartListener;
@@ -42,10 +43,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemList.get(position);
         holder.bind(item);
-
-        // Get the quantity of the item from CartManager and display it
-        int quantity = cartManager.getItemQuantity(item);
-        holder.itemQuantity.setText("Quantity: " + quantity);
     }
 
     @Override
@@ -63,44 +60,47 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             itemName = itemView.findViewById(R.id.foodName);
             itemPrice = itemView.findViewById(R.id.price);
             itemImage = itemView.findViewById(R.id.foodImage);
-            itemQuantity = itemView.findViewById(R.id.quantity);  // Added quantity TextView
+            itemQuantity = itemView.findViewById(R.id.quantity);
             buttonAddToCart = itemView.findViewById(R.id.addToCart);
         }
 
         public void bind(Item item) {
             itemName.setText(item.getName());
             itemPrice.setText("Price: $" + item.getPrice());
-            itemQuantity.setText("Quantity: " + cartManager.getItemQuantity(item));
+            updateQuantityDisplay(item);
 
-            // Load image using Glide
-            Glide.with(itemImage.getContext()).load(item.getImageUrl()).into(itemImage);
+            // Load image using Glide with error handling
+            Glide.with(itemImage.getContext())
+                    .load(item.getImageUrl())
+                    .placeholder(R.drawable.image)  // Set a placeholder
+                    .error(R.drawable.ic_cart)        // Set an error image
+                    .into(itemImage);
 
-            // Ensure that we clear and set a single click listener
             buttonAddToCart.setOnClickListener(v -> {
                 // Disable button to avoid double-click issues
                 buttonAddToCart.setEnabled(false);
 
                 Log.d("ItemAdapter", "Add to Cart clicked for item: " + item.getName());
 
-                // Ensure item ID is valid before proceeding
                 if (item.getId() != null) {
-                    // Add one item to the cart
-                    cartManager.addToCart(item);  // Add exactly 1 quantity to the cart
-                    addToCartListener.onAddToCart(item);  // Notify the activity
-
+                    cartManager.addToCart(item);
+                    if (addToCartListener != null) {
+                        addToCartListener.onAddToCart(item);
+                    }
                     Toast.makeText(itemView.getContext(), "Added 1 item to Cart", Toast.LENGTH_SHORT).show();
-
-                    // Update the displayed quantity in the item
-                    int updatedQuantity = cartManager.getItemQuantity(item);
-                    itemQuantity.setText("Quantity: " + updatedQuantity);
-
+                    updateQuantityDisplay(item);
                 } else {
                     Toast.makeText(itemView.getContext(), "Error: Item ID is null", Toast.LENGTH_SHORT).show();
                 }
 
-                // Re-enable button after a short delay to prevent multiple clicks
+                // Re-enable button after a short delay
                 buttonAddToCart.postDelayed(() -> buttonAddToCart.setEnabled(true), 500);
             });
+        }
+
+        private void updateQuantityDisplay(Item item) {
+            int quantity = cartManager.getItemQuantity(item);
+            itemQuantity.setText("Quantity: " + quantity);
         }
     }
 }
