@@ -51,7 +51,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
-        private TextView itemName, itemPrice, itemQuantity;
+        private TextView itemName, itemPrice, itemQuantity,itemdescription;
         private ImageView itemImage;
         private Button buttonAddToCart;
 
@@ -61,6 +61,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             itemPrice = itemView.findViewById(R.id.price);
             itemImage = itemView.findViewById(R.id.foodImage);
             itemQuantity = itemView.findViewById(R.id.quantity);
+            itemdescription = itemView.findViewById(R.id.descerption);
             buttonAddToCart = itemView.findViewById(R.id.addToCart);
         }
 
