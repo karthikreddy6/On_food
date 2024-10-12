@@ -33,7 +33,7 @@
 
         <!-- Cuisine Type -->
         <TextView
-            android:id="@+id/cuisineType"
+            android:id="@+id/descerption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Japanese cuisine"

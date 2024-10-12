@@ -35,7 +35,6 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         // In OrderConfirmationActivity.java
         ImageButton buttonBack = findViewById(R.id.buttonBack);
         ImageButton buttonCart = findViewById(R.id.buttonCart);
-        ImageButton buttonProfile = findViewById(R.id.buttonProfile);
         TextView navText =findViewById(R.id.navtext);
         navText.setText("ORDER STATUS");
 
@@ -44,7 +43,8 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         buttonBack.setOnClickListener(v -> onBackPressed());
 
 // Hide profile button in this activity
-        buttonProfile.setVisibility(View.GONE);
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonCart.setVisibility(View.VISIBLE);
         orderIdTextView = findViewById(R.id.orderId);
         totalPriceTextView = findViewById(R.id.totalPriceTextView);
         orderDetailsTextView = findViewById(R.id.textView3);

@@ -43,21 +43,16 @@ public class CartActivity extends AppCompatActivity {
 
         ImageButton buttonBack = findViewById(R.id.buttonBack);
         ImageButton buttonCart = findViewById(R.id.buttonCart);
-        ImageButton buttonProfile = findViewById(R.id.buttonProfile);
         TextView navText =findViewById(R.id.navtext);
         navText.setText("CART");
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();  // Get current logged-in user
 
-
-
-
-
-
         buttonCart.setOnClickListener(v -> startActivity(new Intent(CartActivity.this,OrderHistoryActivity.class)));
         buttonBack.setOnClickListener(v -> onBackPressed());
-        buttonProfile.setVisibility(View.GONE);
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonCart.setVisibility(View.VISIBLE);
 
         totalAmountTextView = findViewById(R.id.totalAmountTextView);
         recyclerViewCartItems = findViewById(R.id.recyclerViewCartItems);
@@ -84,7 +79,14 @@ public class CartActivity extends AppCompatActivity {
         loadCartItems();
         displayTotalAmount();
     }
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, ItemListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish(); // Optional: to close the current activity
+    }
     public void displayTotalAmount() {
         double totalAmount = cartManager.getTotalAmount();
         totalAmountTextView.setText("Total Amount: $" + totalAmount);  // Display total amount
@@ -106,4 +108,5 @@ public class CartActivity extends AppCompatActivity {
         CartAdapter cartAdapter = new CartAdapter(cartItems, cartManager, this);
         recyclerViewCartItems.setAdapter(cartAdapter);
     }
+
 }

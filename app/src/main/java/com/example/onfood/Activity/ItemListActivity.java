@@ -45,14 +45,14 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         View navigationBar = getLayoutInflater().inflate(R.layout.navigation_bar, null);
         ((ViewGroup) findViewById(R.id.navigationContainer)).addView(navigationBar);
 
-        ImageButton buttonback =findViewById(R.id.buttonBack);
         ImageButton buttonCart = findViewById(R.id.buttonCart);
         ImageButton buttonProfile = findViewById(R.id.buttonProfile);
         TextView navText = findViewById(R.id.navtext);
         navText.setText("MENU ");
-        navText.setTextSize(20);
 
-        buttonback.setVisibility(View.GONE);
+
+        buttonCart.setVisibility(View.VISIBLE);
+        buttonProfile.setVisibility(View.VISIBLE);
         Button buttonGoToCart = findViewById(R.id.buttonGoToCart);
         recyclerViewItems = findViewById(R.id.recyclerViewItems);
         progressBar = findViewById(R.id.progressBar);
@@ -67,6 +67,11 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         setupCategorySpinner();
         loadItemsFromFirestore();
         buttonGoToCart.setOnClickListener(v -> gotoChart());
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload data or refresh UI
     }
 
     private void setupCategorySpinner() {

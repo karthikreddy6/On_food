@@ -35,14 +35,16 @@ public class ProfileActivity extends AppCompatActivity {
         // In OrderConfirmationActivity.java
         ImageButton buttonBack = findViewById(R.id.buttonBack);
         ImageButton buttonCart = findViewById(R.id.buttonCart);
-        ImageButton buttonProfile = findViewById(R.id.buttonProfile);
+        ImageButton buttonLogOut =findViewById(R.id.Logout);
         TextView navText =findViewById(R.id.navtext);
+
         navText.setText("Profile");
-        buttonCart.setOnClickListener(v -> startActivity(new Intent(ProfileActivity.this, OrderHistoryActivity.class)));
+        buttonLogOut.setOnClickListener(v-> logoutUser());
         buttonBack.setOnClickListener(v -> onBackPressed());
 
 // Hide profile button in this activity
-        buttonProfile.setVisibility(View.GONE);
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonLogOut.setVisibility(View.VISIBLE);
         fetchUserProfile();
     }
 
@@ -68,4 +70,11 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 });
     }
+    public void logoutUser() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent =new Intent(ProfileActivity.this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
 }

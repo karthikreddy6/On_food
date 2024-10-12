@@ -37,15 +37,13 @@ public class OrderHistoryActivity extends AppCompatActivity {
         ((ViewGroup) findViewById(R.id.navigationContainer)).addView(navigationBar);
 
         ImageButton buttonBack = findViewById(R.id.buttonBack);
-        ImageButton buttonCart = findViewById(R.id.buttonCart);
-        ImageButton buttonProfile = findViewById(R.id.buttonProfile);
+
         TextView navText =findViewById(R.id.navtext);
         navText.setText("ORDER HISTORY");
 
 //        buttonCart.setOnClickListener(v -> startActivity(new Intent(OrderHistoryActivity.this, OrderHistoryActivity.class)));
         buttonBack.setOnClickListener(v -> onBackPressed());
-        buttonCart.setVisibility(View.GONE);
-        buttonProfile.setVisibility(View.GONE);
+        buttonBack.setVisibility(View.VISIBLE);
 
         listViewOrders = findViewById(R.id.listViewOrders);
         mAuth = FirebaseAuth.getInstance();
