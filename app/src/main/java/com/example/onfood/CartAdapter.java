@@ -8,16 +8,24 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.onfood.Activity.CartActivity;
+
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
 
     private List<CartItem> cartItemList;
     private CartManager cartManager;
+    private CartActivity cartActivity;
 
-    public CartAdapter(List<CartItem> cartItemList, CartManager cartManager) {
+
+    public CartAdapter(List<CartItem> cartItemList, CartManager cartManager, CartActivity cartActivity) {
         this.cartItemList = cartItemList;
         this.cartManager = cartManager;
+        this.cartActivity = cartActivity;
+
+
     }
 
     @NonNull
@@ -61,7 +69,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             buttonIncreaseQuantity.setOnClickListener(v -> {
                 cartManager.increaseItemQuantity(item);
                 cartItem.setQuantity(cartItem.getQuantity() + 1);
-                notifyItemChanged(getAdapterPosition());  // Refresh item in RecyclerView
+                notifyItemChanged(getAdapterPosition());
+                cartActivity.displayTotalAmount(); // Update total amount in CartActivity
             });
 
             // Handle decreasing the quantity
@@ -69,10 +78,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 if (cartItem.getQuantity() > 1) {
                     cartManager.decreaseItemQuantity(item);
                     cartItem.setQuantity(cartItem.getQuantity() - 1);
+                    cartActivity.displayTotalAmount(); // Update total amount in CartActivity
                     notifyItemChanged(getAdapterPosition());
                 } else {
                     cartManager.removeItemFromCart(item);
                     cartItemList.remove(getAdapterPosition());
+                    cartActivity.displayTotalAmount(); // Update total amount in CartActivity
                     notifyItemRemoved(getAdapterPosition());
                 }
             });

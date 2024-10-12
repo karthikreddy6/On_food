@@ -85,7 +85,7 @@ public class CartActivity extends AppCompatActivity {
         displayTotalAmount();
     }
 
-    private void displayTotalAmount() {
+    public void displayTotalAmount() {
         double totalAmount = cartManager.getTotalAmount();
         totalAmountTextView.setText("Total Amount: $" + totalAmount);  // Display total amount
     }
@@ -103,7 +103,7 @@ public class CartActivity extends AppCompatActivity {
         List<CartItem> cartItems = new ArrayList<>(cartItemsWithQuantities.values());
 
         // Set the adapter with the cart items and CartManager
-        CartAdapter cartAdapter = new CartAdapter(cartItems, cartManager);
+        CartAdapter cartAdapter = new CartAdapter(cartItems, cartManager, this);
         recyclerViewCartItems.setAdapter(cartAdapter);
     }
 }
