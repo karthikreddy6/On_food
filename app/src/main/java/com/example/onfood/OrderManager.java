@@ -1,9 +1,14 @@
 package com.example.onfood;
 
 import android.content.Context;
+import android.icu.text.SimpleDateFormat;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class OrderManager {
@@ -21,6 +26,10 @@ public class OrderManager {
     public void placeOrder(String userId, OnOrderPlacedListener listener) {
         // Generate a unique Order ID
         String orderId = ordersRef.push().getKey();  // Generate unique order ID
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy", Locale.getDefault());
+        SimpleDateFormat TimeFormat = new SimpleDateFormat(" hh.mm.a", Locale.getDefault());
+        String formattedTime = TimeFormat.format(new Date());
+        String formattedDate = dateFormat.format(new Date());
 
         if (orderId == null) {
             return;  // If orderId is null, something went wrong with push() call.
@@ -39,6 +48,8 @@ public class OrderManager {
         Map<String, Object> orderDetails = new HashMap<>();
         orderDetails.put("userId", userId);
         orderDetails.put("amount", totalAmount);
+        orderDetails.put("orderDate", formattedDate);
+        orderDetails.put("orderTime", formattedTime);
 
         // Create a nested map to store items under "items" node
         Map<String, Object> itemsMap = new HashMap<>();
@@ -55,6 +66,9 @@ public class OrderManager {
             itemsMap.put("item" + itemIndex, itemDetails);
             itemIndex++;
         }
+
+
+
 
         // Add the items map to the order details
         orderDetails.put("items", itemsMap);
