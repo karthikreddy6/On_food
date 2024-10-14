@@ -4,12 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +19,7 @@ import com.example.onfood.CartManager;
 import com.example.onfood.Item;
 import com.example.onfood.ItemAdapter;
 import com.example.onfood.R;
+import com.example.onfood.CategoryAdapter; // Make sure to import the new CategoryAdapter
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -30,10 +28,9 @@ import java.util.List;
 
 public class ItemListActivity extends AppCompatActivity implements ItemAdapter.OnAddToCartListener {
 
-    private RecyclerView recyclerViewItems;
+    private RecyclerView recyclerViewItems, recyclerViewCategories;
     private FirebaseFirestore db;
     private List<Item> itemList = new ArrayList<>();
-    private Spinner categorySpinner;
     private ProgressBar progressBar;
     private CartManager cartManager;
 
@@ -50,46 +47,53 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         TextView navText = findViewById(R.id.navtext);
         navText.setText("MENU ");
 
-
         buttonCart.setVisibility(View.VISIBLE);
         buttonProfile.setVisibility(View.VISIBLE);
         Button buttonGoToCart = findViewById(R.id.buttonGoToCart);
         recyclerViewItems = findViewById(R.id.recyclerViewItems);
         progressBar = findViewById(R.id.progressBar);
+        recyclerViewCategories = findViewById(R.id.recyclerViewCategories); // Initialize RecyclerView for categories
+
         recyclerViewItems.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewCategories.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)); // Horizontal Layout for categories
 
         cartManager = CartManager.getInstance(this); // Initialize CartManager
 
         buttonCart.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, OrderHistoryActivity.class)));
         buttonProfile.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, ProfileActivity.class)));
 
-        categorySpinner = findViewById(R.id.categorySpinner);
-        setupCategorySpinner();
-        loadItemsFromFirestore();
+        setupCategoryRecyclerView(); // Method to setup categories
+        loadItemsFromFirestore(); // Load items from Firestore
         buttonGoToCart.setOnClickListener(v -> gotoChart());
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         // Reload data or refresh UI
     }
 
-    private void setupCategorySpinner() {
-        String[] categories = {"All", "Tiffen", "drinks", "Category3"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        categorySpinner.setAdapter(adapter);
+    private void setupCategoryRecyclerView() {
+        final List<String> categories = new ArrayList<>();
+        CategoryAdapter categoryAdapter = new CategoryAdapter(categories, selectedCategory -> {
+            filterItemsByCategory(selectedCategory);
+        });
 
-        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selectedCategory = categories[position];
-                filterItemsByCategory(selectedCategory);
-            }
+        recyclerViewCategories.setAdapter(categoryAdapter);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // Do nothing
+        // Fetch categories from Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Categories").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (DocumentSnapshot doc : task.getResult()) {
+                    String categoryName = doc.getString("name");
+                    if (categoryName != null) {
+                        categories.add(categoryName);
+                    }
+                }
+                categoryAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(ItemListActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -132,6 +136,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
             startActivity(new Intent(ItemListActivity.this, CartActivity.class));
         }
     }
+
     @Override
     public void onAddToCart(Item item) {
         // Handle the action after an item is added to the cart

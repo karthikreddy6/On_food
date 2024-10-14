@@ -79,14 +79,14 @@ public class CartActivity extends AppCompatActivity {
         loadCartItems();
         displayTotalAmount();
     }
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(this, ItemListActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish(); // Optional: to close the current activity
-    }
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        Intent intent = new Intent(this, ItemListActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
+//        finish(); // Optional: to close the current activity
+//    }
     public void displayTotalAmount() {
         double totalAmount = cartManager.getTotalAmount();
         totalAmountTextView.setText("Total Amount: $" + totalAmount);  // Display total amount

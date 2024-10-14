@@ -20,6 +20,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
     private TextView orderIdTextView;
     private TextView totalPriceTextView;
     private TextView orderDetailsTextView;
+    private TextView orderTimeTextView;
     private DatabaseReference ordersRef;
 
     @Override
@@ -27,27 +28,24 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_confirmation);
 
-
         // Include navigation bar
         View navigationBar = getLayoutInflater().inflate(R.layout.navigation_bar, null);
         ((ViewGroup) findViewById(R.id.navigationContainer)).addView(navigationBar);
 
-        // In OrderConfirmationActivity.java
         ImageButton buttonBack = findViewById(R.id.buttonBack);
         ImageButton buttonCart = findViewById(R.id.buttonCart);
-        TextView navText =findViewById(R.id.navtext);
+        TextView navText = findViewById(R.id.navtext);
         navText.setText("ORDER STATUS");
 
-// Set up click listeners
-         buttonCart.setOnClickListener(v -> startActivity(new Intent(OrderConfirmationActivity.this, OrderHistoryActivity.class)));
+        buttonCart.setOnClickListener(v -> startActivity(new Intent(OrderConfirmationActivity.this, OrderHistoryActivity.class)));
         buttonBack.setOnClickListener(v -> onBackPressed());
 
-// Hide profile button in this activity
         buttonBack.setVisibility(View.VISIBLE);
         buttonCart.setVisibility(View.VISIBLE);
         orderIdTextView = findViewById(R.id.orderId);
         totalPriceTextView = findViewById(R.id.totalPriceTextView);
         orderDetailsTextView = findViewById(R.id.textView3);
+        orderTimeTextView = findViewById(R.id.timeView);
         ordersRef = FirebaseDatabase.getInstance().getReference("Orders");
 
         // Get the order ID from the intent
@@ -63,9 +61,12 @@ public class OrderConfirmationActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String amount = dataSnapshot.child("amount").getValue(Double.class).toString();
-                    orderIdTextView.setText("Order ID: " + orderId);
-                    totalPriceTextView.setText(amount);
+                    String time = dataSnapshot.child("orderTime").getValue(String.class).toString();
+                    String date = dataSnapshot.child("orderDate").getValue(String.class).toString();
 
+                    orderIdTextView.setText("Order ID: " + orderId);
+                    totalPriceTextView.setText("Total Amount: $" + amount);
+                    orderTimeTextView.setText("Order Time: " +date+" ("+time+" )");
                     StringBuilder orderDetails = new StringBuilder();
                     for (DataSnapshot itemSnapshot : dataSnapshot.child("items").getChildren()) {
                         String name = itemSnapshot.child("name").getValue(String.class);

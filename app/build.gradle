@@ -35,6 +35,7 @@ dependencies {
     implementation libs.viewbinding
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     // Add Firebase dependencies (with no version numbers)
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-database'

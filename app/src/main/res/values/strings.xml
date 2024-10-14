@@ -6,4 +6,5 @@
     <string name="Lougout">Lougout</string>
 
     <string name="profile_button">Profile</string>
+    <string name="order_success_icon">order_conform_icon</string>
 </resources>
