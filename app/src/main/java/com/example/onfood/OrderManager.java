@@ -26,7 +26,8 @@ public class OrderManager {
     public void placeOrder(String userId, OnOrderPlacedListener listener) {
         // Generate a unique Order ID
         String orderId = ordersRef.push().getKey();  // Generate unique order ID
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy", Locale.getDefault());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
         SimpleDateFormat TimeFormat = new SimpleDateFormat(" hh.mm a", Locale.getDefault());
         String formattedTime = TimeFormat.format(new Date());
         String formattedDate = dateFormat.format(new Date());

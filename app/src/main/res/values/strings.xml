@@ -7,4 +7,8 @@
 
     <string name="profile_button">Profile</string>
     <string name="order_success_icon">order_conform_icon</string>
+    <string name="total_amount">totalamount\n</string>
+    <string name="order_id">order_id</string>
+    <string name="order_date">order_date</string>
+    <string name="order_time">order_time\n</string>
 </resources>
