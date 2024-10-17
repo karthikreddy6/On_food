@@ -25,13 +25,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class OrderHistoryActivity extends AppCompatActivity {
     private RecyclerView recyclerViewOrders;
     private DatabaseReference ordersRef;
     private FirebaseAuth mAuth;
-    private List<Order> orderList; // Changed to Order object
+    private List<Order> orderList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,6 @@ public class OrderHistoryActivity extends AppCompatActivity {
         // Include navigation bar
         View navigationBar = getLayoutInflater().inflate(R.layout.navigation_bar, null);
         ((ViewGroup) findViewById(R.id.navigationContainer)).addView(navigationBar);
-
 
         ImageButton buttonBack = findViewById(R.id.buttonBack);
         TextView navText = findViewById(R.id.navtext);
@@ -60,22 +61,32 @@ public class OrderHistoryActivity extends AppCompatActivity {
     }
 
     private void fetchOrderHistory() {
-        String userId = mAuth.getCurrentUser().getUid(); // Get the current user ID
+        String userId = mAuth.getCurrentUser().getUid();
 
         ordersRef.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                orderList.clear(); // Clear previous orders
+                orderList.clear();
                 for (DataSnapshot orderSnapshot : dataSnapshot.getChildren()) {
                     String orderId = orderSnapshot.getKey();
                     double amount = orderSnapshot.child("amount").getValue(Double.class);
                     String date = orderSnapshot.child("orderDate").getValue(String.class);
                     String time = orderSnapshot.child("orderTime").getValue(String.class);
 
-                    // Create Order object
                     Order order = new Order(orderId, amount, date, time);
                     orderList.add(order);
                 }
+
+                // Sort orders by date and time in descending order (newest first)
+                Collections.sort(orderList, new Comparator<Order>() {
+                    @Override
+                    public int compare(Order order1, Order order2) {
+                        // Combine date and time for comparison
+                        String dateTime1 = order1.getOrderDate() + " " + order1.getOrderTime();
+                        String dateTime2 = order2.getOrderDate() + " " + order2.getOrderTime();
+                        return dateTime2.compareTo(dateTime1); // Descending order
+                    }
+                });
 
                 if (orderList.isEmpty()) {
                     Toast.makeText(OrderHistoryActivity.this, "No previous orders found.", Toast.LENGTH_SHORT).show();
@@ -83,11 +94,10 @@ public class OrderHistoryActivity extends AppCompatActivity {
                     OrderAdapter adapter = new OrderAdapter(orderList);
                     recyclerViewOrders.setAdapter(adapter);
 
-                    // Set item click listener to navigate to OrderConfirmationActivity
                     adapter.setOnItemClickListener(position -> {
-                        String selectedOrderId = orderList.get(position).getOrderId(); // Get the order ID
+                        String selectedOrderId = orderList.get(position).getOrderId();
                         Intent intent = new Intent(OrderHistoryActivity.this, OrderConfirmationActivity.class);
-                        intent.putExtra("ORDER_ID", selectedOrderId); // Pass the order ID
+                        intent.putExtra("ORDER_ID", selectedOrderId);
                         startActivity(intent);
                     });
                 }

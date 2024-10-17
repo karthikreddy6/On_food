@@ -3,12 +3,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.onfood.Activity.CartActivity;
 
 import java.util.List;
@@ -49,12 +51,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public class CartViewHolder extends RecyclerView.ViewHolder {
         private TextView itemName, itemQuantity, itemPrice;
         private Button buttonIncreaseQuantity,  buttonDecreaseQuantity;
-
+        private ImageView imageView;
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
             itemName = itemView.findViewById(R.id.cartItemName);
             itemQuantity = itemView.findViewById(R.id.cartItemQuantity);
             itemPrice = itemView.findViewById(R.id.cartItemPrice);
+            imageView =itemView.findViewById(R.id.cartItemImage);
             buttonIncreaseQuantity = itemView.findViewById(R.id.increaseQuantity);
             buttonDecreaseQuantity = itemView.findViewById(R.id.decreaseQuantity);
         }
@@ -64,6 +67,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             itemName.setText(item.getName() != null ? item.getName() : "Unknown Item");
             itemQuantity.setText(String.valueOf(cartItem.getQuantity()));
             itemPrice.setText("Price: $" + item.getPrice() * cartItem.getQuantity());
+
+            Glide.with(itemView.getContext())
+                    .load(item.getImageUrl())
+                    .placeholder(R.drawable.image)  // Set a placeholder
+                    .error(R.drawable.ic_cart)        // Set an error image
+                    .into(imageView);
+
 
             // Handle increasing the quantity
             buttonIncreaseQuantity.setOnClickListener(v -> {
