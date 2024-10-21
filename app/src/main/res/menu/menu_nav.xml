@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/navigation_cart"
+        android:icon="@drawable/cart"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:checkable="false"
+        android:title="Cart" />
+</menu>

@@ -20,6 +20,7 @@ import com.example.onfood.Item;
 import com.example.onfood.ItemAdapter;
 import com.example.onfood.R;
 import com.example.onfood.CategoryAdapter; // Make sure to import the new CategoryAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -49,7 +50,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
 
         buttonCart.setVisibility(View.VISIBLE);
         buttonProfile.setVisibility(View.VISIBLE);
-        Button buttonGoToCart = findViewById(R.id.buttonGoToCart);
+
         recyclerViewItems = findViewById(R.id.recyclerViewItems);
         progressBar = findViewById(R.id.progressBar);
         recyclerViewCategories = findViewById(R.id.recyclerViewCategories); // Initialize RecyclerView for categories
@@ -64,7 +65,21 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
 
         setupCategoryRecyclerView(); // Method to setup categories
         loadItemsFromFirestore(); // Load items from Firestore
-        buttonGoToCart.setOnClickListener(v -> gotoChart());
+        BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.navigation_home) {
+
+                return true;
+
+            } else if (itemId == R.id.navigation_cart) {
+               gotoChart();
+                return false;
+            }
+
+            return false;
+        });
     }
 
     @Override

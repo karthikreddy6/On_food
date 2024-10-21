@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="150px"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp"
-    android:background="@color/colorPrimary">
+    android:padding="10dp"
+    android:background="@drawable/gradient_background">
 
-    <!-- Back Button -->
     <ImageButton
         android:id="@+id/buttonBack"
         android:layout_width="wrap_content"
@@ -16,19 +15,20 @@
         android:visibility="gone"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="@string/back_button"
-        android:src="@drawable/ic_back" /> <!-- Replace with your back icon -->
-
-
+        android:src="@drawable/ic_back"
+        app:tint="@color/white" />
 
     <ImageButton
-        android:id="@+id/buttonCart"
+        android:id="@+id/buttonProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
         android:background="?attr/selectableItemBackground"
-        android:contentDescription="@string/cart_button"
-        android:src="@drawable/ic_cart" />
+        android:contentDescription="@string/profile_button"
+        android:src="@drawable/ic_profile"
+        android:visibility="gone"
+        app:tint="@color/white" />
 
     <ImageButton
         android:id="@+id/Logout"
@@ -36,34 +36,33 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:visibility="gone"
-        android:backgroundTint="@color/black"
+        android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackground"
-        android:contentDescription="@string/Lougout"
-        android:src="@drawable/ic_logout" />
+        android:contentDescription="@string/Logout"
+        android:src="@drawable/ic_logout"
+        app:tint="@color/white" />
 
     <ImageButton
-        android:id="@+id/buttonProfile"
-        android:visibility="gone"
+        android:id="@+id/buttonCart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="28dp"
         android:background="?attr/selectableItemBackground"
-        android:contentDescription="@string/profile_button"
-        android:src="@drawable/ic_profile" />
-
+        android:contentDescription="@string/cart_button"
+        android:src="@drawable/ic_cart"
+        android:visibility="gone"
+        app:tint="@color/white" />
 
     <TextView
-        android:id="@+id/navtext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:text="TextView"
-        android:textColor="@color/black"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        /> <!-- Replace with your profile icon -->
-
-</RelativeLayout>
+android:id="@+id/navtext"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_centerInParent="true"
+android:text="Title"
+android:textColor="@color/white"
+android:textAlignment="center"
+android:textSize="24sp"
+android:textStyle="bold"
+    />
+    </RelativeLayout>
