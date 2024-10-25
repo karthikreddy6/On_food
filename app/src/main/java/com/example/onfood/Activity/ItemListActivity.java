@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,6 +19,7 @@ import com.example.onfood.Item;
 import com.example.onfood.ItemAdapter;
 import com.example.onfood.R;
 import com.example.onfood.CategoryAdapter; // Make sure to import the new CategoryAdapter
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,6 +34,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
     private List<Item> itemList = new ArrayList<>();
     private ProgressBar progressBar;
     private CartManager cartManager;
+    private BadgeDrawable badgeDrawable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,40 +53,45 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         buttonProfile.setVisibility(View.VISIBLE);
 
         recyclerViewItems = findViewById(R.id.recyclerViewItems);
-        progressBar = findViewById(R.id.progressBar);
         recyclerViewCategories = findViewById(R.id.recyclerViewCategories); // Initialize RecyclerView for categories
 
         recyclerViewItems.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewCategories.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)); // Horizontal Layout for categories
 
         cartManager = CartManager.getInstance(this); // Initialize CartManager
+        setupBottomNavigation();
 
         buttonCart.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, OrderHistoryActivity.class)));
         buttonProfile.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, ProfileActivity.class)));
 
-        setupCategoryRecyclerView(); // Method to setup categories
-        loadItemsFromFirestore(); // Load items from Firestore
+        setupCategoryRecyclerView();
+        loadItemsFromFirestore();
+    }
+
+    private void setupBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
-
             if (itemId == R.id.navigation_home) {
-
+                // Handle home navigation
                 return true;
-
             } else if (itemId == R.id.navigation_cart) {
-               gotoChart();
+                gotoChart(); // Navigate to the cart
                 return false;
             }
-
             return false;
         });
+
+        // Create a badge for the cart icon
+        badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.navigation_cart);
+        badgeDrawable.setVisible(false); // Make it invisible initially
+        badgeDrawable.setNumber(0); // Set the initial count to zero
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload data or refresh UI
+        updateCartBadge(); // Update badge whenever the activity is resumed
     }
 
     private void setupCategoryRecyclerView() {
@@ -97,7 +103,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         recyclerViewCategories.setAdapter(categoryAdapter);
 
         // Fetch categories from Firestore
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         db.collection("Categories").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (DocumentSnapshot doc : task.getResult()) {
@@ -154,6 +160,16 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
 
     @Override
     public void onAddToCart(Item item) {
-        // Handle the action after an item is added to the cart
+        updateCartBadge(); // Update badge count when an item is added to the cart
+    }
+
+    private void updateCartBadge() {
+        int itemCount = cartManager.getCartItemsWithQuantities().size();
+        if (itemCount > 0) {
+            badgeDrawable.setVisible(true);
+            badgeDrawable.setNumber(itemCount);
+        } else {
+            badgeDrawable.setVisible(false);
+        }
     }
 }

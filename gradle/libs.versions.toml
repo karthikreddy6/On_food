@@ -11,6 +11,8 @@ googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.0.0"
 firebaseInappmessaging = "21.0.0"
 firebaseFirestore = "25.1.0"
+materialVersion = "1.6.0"
+recyclerview = "1.2.1"
 viewbinding = "8.7.0"
 firebaseMessaging = "24.0.2"
 
@@ -25,6 +27,8 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-inappmessaging = { group = "com.google.firebase", name = "firebase-inappmessaging", version.ref = "firebaseInappmessaging" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+material-v160 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 viewbinding = { group = "androidx.databinding", name = "viewbinding", version.ref = "viewbinding" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 
