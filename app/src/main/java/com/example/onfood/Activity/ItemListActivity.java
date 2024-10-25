@@ -17,8 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onfood.CartManager;
 import com.example.onfood.Item;
 import com.example.onfood.ItemAdapter;
+import com.example.onfood.HorizontalItemAdapter; // Import the new HorizontalItemAdapter
 import com.example.onfood.R;
-import com.example.onfood.CategoryAdapter; // Make sure to import the new CategoryAdapter
+import com.example.onfood.CategoryAdapter; // Ensure to import the new CategoryAdapter
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -29,9 +30,10 @@ import java.util.List;
 
 public class ItemListActivity extends AppCompatActivity implements ItemAdapter.OnAddToCartListener {
 
-    private RecyclerView recyclerViewItems, recyclerViewCategories;
+    private RecyclerView recyclerViewItems, recyclerViewCategories, recyclerViewHorizontalItems;
     private FirebaseFirestore db;
     private List<Item> itemList = new ArrayList<>();
+    private List<Item> horizontalItemList = new ArrayList<>(); // New list for horizontal items
     private ProgressBar progressBar;
     private CartManager cartManager;
     private BadgeDrawable badgeDrawable;
@@ -47,16 +49,18 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         ImageButton buttonCart = findViewById(R.id.buttonCart);
         ImageButton buttonProfile = findViewById(R.id.buttonProfile);
         TextView navText = findViewById(R.id.navtext);
-        navText.setText("MENU ");
+        navText.setText("MENU");
 
         buttonCart.setVisibility(View.VISIBLE);
         buttonProfile.setVisibility(View.VISIBLE);
 
         recyclerViewItems = findViewById(R.id.recyclerViewItems);
-        recyclerViewCategories = findViewById(R.id.recyclerViewCategories); // Initialize RecyclerView for categories
+        recyclerViewCategories = findViewById(R.id.recyclerViewCategories); // Horizontal RecyclerView for categories
+        recyclerViewHorizontalItems = findViewById(R.id.recyclerViewHorizontalItems); // New horizontal RecyclerView for items
 
         recyclerViewItems.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewCategories.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)); // Horizontal Layout for categories
+        recyclerViewHorizontalItems.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)); // New horizontal layout for items
 
         cartManager = CartManager.getInstance(this); // Initialize CartManager
         setupBottomNavigation();
@@ -65,7 +69,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         buttonProfile.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, ProfileActivity.class)));
 
         setupCategoryRecyclerView();
-        loadItemsFromFirestore();
+        loadItemsFromFirestore(); // Load items from Firestore
     }
 
     private void setupBottomNavigation() {
@@ -73,11 +77,10 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_home) {
-                // Handle home navigation
                 return true;
             } else if (itemId == R.id.navigation_cart) {
                 gotoChart(); // Navigate to the cart
-                return false;
+                return true;
             }
             return false;
         });
@@ -121,21 +124,42 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
 
     private void loadItemsFromFirestore() {
         db = FirebaseFirestore.getInstance();
+
+        // Fetch vertical items
         db.collection("MenuItem").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                itemList.clear();
+                itemList.clear(); // Clear the vertical item list
                 for (DocumentSnapshot doc : task.getResult()) {
                     Item item = doc.toObject(Item.class);
                     if (item != null) {
                         item.setId(doc.getId());
-                        itemList.add(item);
+                        itemList.add(item); // Add to vertical items
                     }
                 }
-                // Pass the CartManager to the adapter
+                // Pass the CartManager to the adapter for vertical items
                 ItemAdapter adapter = new ItemAdapter(itemList, cartManager, this);
                 recyclerViewItems.setAdapter(adapter);
             } else {
-                Toast.makeText(ItemListActivity.this, "Failed to load items", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ItemListActivity.this, "Failed to load vertical items", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Fetch horizontal items from another path
+        db.collection("SplMenuItem").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                horizontalItemList.clear(); // Clear the horizontal item list
+                for (DocumentSnapshot doc : task.getResult()) {
+                    Item item = doc.toObject(Item.class);
+                    if (item != null) {
+                        item.setId(doc.getId());
+                        horizontalItemList.add(item); // Add to horizontal items
+                    }
+                }
+                // Set up the horizontal item view adapter
+                HorizontalItemAdapter horizontalAdapter = new HorizontalItemAdapter(horizontalItemList);
+                recyclerViewHorizontalItems.setAdapter(horizontalAdapter);
+            } else {
+                Toast.makeText(ItemListActivity.this, "Failed to load horizontal items", Toast.LENGTH_SHORT).show();
             }
         });
     }
