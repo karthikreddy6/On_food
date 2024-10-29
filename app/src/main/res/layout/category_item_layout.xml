@@ -1,18 +1,56 @@
-<RelativeLayout
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
-    android:padding="3dp"
-    android:orientation="vertical">
+    android:layout_margin="4dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E0E0E0"
+    android:clickable="true"
+    android:focusable="true"
+    app:rippleColor="#33000000"
+    android:stateListAnimator="@animator/category_selection_animator">
 
-    <TextView
-        android:id="@+id/categoryName"
-        android:layout_width="80dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:gravity="center"
-        android:padding="3dp"
-        android:text="name"
-        android:textColor="@android:color/black"
-        android:textSize="12sp" />
-</RelativeLayout>
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp">
+
+        <!-- Optional Icon -->
+        <ImageView
+            android:id="@+id/categoryIcon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="6dp"
+            android:visibility="gone"
+            app:tint="@color/category_icon_color" />
+
+        <TextView
+            android:id="@+id/categoryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textSize="14sp"
+            android:textColor="@color/category_text_color"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <!-- Optional Counter -->
+        <TextView
+            android:id="@+id/categoryCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:textSize="12sp"
+            android:textColor="@color/category_count_color"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

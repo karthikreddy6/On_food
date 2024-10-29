@@ -1,17 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
     <RelativeLayout
         android:id="@+id/navigationContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <ScrollView
-        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -21,20 +20,35 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Top Picks"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="8dp"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewHorizontalItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="horizontal"
-                android:nestedScrollingEnabled="false" />
+                android:orientation="horizontal"
+                android:clipToPadding="false"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"/>
 
+            <!-- Categories -->
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/CategoriesTitel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:text="Categories"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textSize="25sp" />
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="8dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewCategories"
@@ -42,24 +56,28 @@
                 android:background="#00FFFFFF"
                 android:layout_height="wrap_content"
                 android:scrollbars="horizontal"
-                android:nestedScrollingEnabled="false" />
+             />
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-               />
+                android:padding="8dp"
+                android:clipToPadding="false"/>
+
+            <!-- Today's Special -->
 
         </LinearLayout>
     </ScrollView>
 
+    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigation"
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:labelVisibilityMode="unlabeled"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/menu_nav" />
+        android:background="@color/white"
+        app:menu="@menu/menu_nav"
+        app:labelVisibilityMode="unlabeled"/>
 
 </LinearLayout>

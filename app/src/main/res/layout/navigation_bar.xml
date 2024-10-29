@@ -1,68 +1,129 @@
-<RelativeLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp"
-    android:background="@drawable/gradient_background">
+    app:cardElevation="4dp"
+    app:cardCornerRadius="0dp">
 
-    <ImageButton
-        android:id="@+id/buttonBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:visibility="gone"
-        android:background="?attr/selectableItemBackground"
-        android:contentDescription="@string/back_button"
-        android:src="@drawable/ic_back"
-        app:tint="@color/white" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@drawable/app_bar_gradient">
 
-    <ImageButton
-        android:id="@+id/buttonProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:background="?attr/selectableItemBackground"
-        android:contentDescription="@string/profile_button"
-        android:src="@drawable/ic_profile"
-        android:visibility="gone"
-        app:tint="@color/white" />
+        <!-- Left Side Group -->
+        <LinearLayout
+            android:id="@+id/leftGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-    <ImageButton
-        android:id="@+id/Logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:visibility="gone"
-        android:layout_marginEnd="16dp"
-        android:background="?attr/selectableItemBackground"
-        android:contentDescription="@string/Logout"
-        android:src="@drawable/ic_logout"
-        app:tint="@color/white" />
+            <ImageButton
+                android:id="@+id/buttonBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/ripple_circular"
+                android:contentDescription="@string/back_button"
+                android:padding="12dp"
+                android:src="@drawable/ic_back"
+                android:visibility="gone"
+                app:tint="@color/white" />
 
-    <ImageButton
-        android:id="@+id/buttonCart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="28dp"
-        android:background="?attr/selectableItemBackground"
-        android:contentDescription="@string/cart_button"
-        android:src="@drawable/ic_cart"
-        android:visibility="gone"
-        app:tint="@color/white" />
+            <ImageButton
+                android:id="@+id/buttonProfile"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/ripple_circular"
+                android:contentDescription="@string/profile_button"
+                android:padding="12dp"
+                android:src="@drawable/ic_profile"
+                android:visibility="gone"
+                app:tint="@color/white" />
+        </LinearLayout>
 
-    <TextView
-android:id="@+id/navtext"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_centerInParent="true"
-android:text="Title"
-android:textColor="@color/white"
-android:textAlignment="center"
-android:textSize="24sp"
-android:textStyle="bold"
-    />
+        <!-- Title with optional subtitle -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/navtext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/navSubtext"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="#E6FFFFFF"
+                android:textSize="14sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Right Side Group -->
+        <LinearLayout
+            android:id="@+id/rightGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/buttonCart"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/ripple_circular"
+                    android:contentDescription="@string/cart_button"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_cart"
+                    android:visibility="gone"
+                    app:tint="@color/white" />
+
+                <!-- Optional Badge for Cart -->
+                <TextView
+                    android:id="@+id/cartBadge"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/badge_background"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <ImageButton
+                android:id="@+id/Logout"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/ripple_circular"
+                android:contentDescription="@string/Logout"
+                android:padding="12dp"
+                android:src="@drawable/ic_logout"
+                android:visibility="gone"
+                app:tint="@color/white" />
+        </LinearLayout>
+
     </RelativeLayout>
+</androidx.cardview.widget.CardView>

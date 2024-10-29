@@ -1,81 +1,105 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
 
-    <!-- Image of the item -->
-    <ImageView
-        android:id="@+id/cartItemImage"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:scaleType="centerCrop"
-        android:layout_gravity="center_vertical" />
-
-    <!-- Item details layout -->
-    <LinearLayout
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingStart="10dp">
+        android:padding="16dp">
 
-        <!-- Item Name -->
-        <TextView
-            android:id="@+id/cartItemName"
+        <!-- Product Image -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/cartItemImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
+        <!-- Product Details Container -->
+        <LinearLayout
+            android:id="@+id/productDetailsContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintStart_toEndOf="@id/cartItemImage"
+            app:layout_constraintEnd_toStartOf="@id/quantityContainer"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/cartItemName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Product Name"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/material_on_surface_emphasis_high_type"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/cartItemPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$99.99"
+                android:textSize="18sp"
+                android:textColor="@color/design_default_color_primary"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Quantity Controls Container -->
+        <LinearLayout
+            android:id="@+id/quantityContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Item Name"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black" />
+            android:orientation="horizontal"
+            android:background="@drawable/quantity_background"
+            android:padding="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Item Price -->
-        <TextView
-            android:id="@+id/cartItemPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Price: $0.00"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray" />
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/decreaseQuantity"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="-"
+                android:textSize="20sp"
+                app:cornerRadius="18dp" />
 
-    <!-- Quantity controls -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/cartItemQuantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginHorizontal="12dp"
+                android:layout_gravity="center" />
 
-        <!-- Decrease quantity button -->
-        <Button
-            android:id="@+id/decreaseQuantity"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:text="-"
-            android:textSize="20sp"
-            android:background="@drawable/baseline_remove_24"
-            android:gravity="center" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/increaseQuantity"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="+"
+                android:textSize="20sp"
+                app:cornerRadius="18dp" />
+        </LinearLayout>
 
-        <!-- Quantity Text -->
-        <TextView
-            android:id="@+id/cartItemQuantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            android:textSize="18sp"
-            android:padding="10dp"
-            android:gravity="center" />
-
-        <!-- Increase quantity button -->
-        <Button
-            android:id="@+id/increaseQuantity"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:text="+"
-            android:textSize="20sp"
-            android:background="@drawable/baseline_add_24"
-            android:gravity="center" />
-    </LinearLayout>
-</LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

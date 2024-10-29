@@ -6,6 +6,7 @@ public class Item {
     private double price;
     private String category; // Category field
     private String imageUrl;
+    private String description; // New field for description
 
     public Item() {
         // Firestore requires a no-arg constructor
@@ -50,5 +51,13 @@ public class Item {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getDescription() { // New getter for description
+        return description;
+    }
+
+    public void setDescription(String description) { // New setter for description
+        this.description = description;
     }
 }

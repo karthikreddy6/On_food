@@ -29,7 +29,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
         holder.orderIdTextView.setText("Order ID: " + order.getOrderId());
-        holder.totalAmountTextView.setText("Total Amount: $" + order.getAmount());
+        holder.totalAmountTextView.setText("₹" + order.getAmount());
 //        holder.orderDateTextView.setText("Date: " + order.getOrderDate());
         holder.orderDateTextView.setText("Order on: "+order.getOrderDate()+"." + order.getOrderTime());
 

@@ -61,9 +61,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             categoryName.setText(category);
             // Change background based on selection
             if (selectedPosition == position) {
-                itemView.setBackgroundResource(R.drawable.gradient_background_on);
+//                itemView.setBackgroundResource(R.drawable.gradient_background_on);
+                categoryName.setTextColor(Color.rgb(245, 98, 54));
             } else {
-                itemView.setBackgroundResource(R.drawable.gradient_background_of);
+//                itemView.setBackgroundResource(R.drawable.round_curve);
+                categoryName.setTextColor(Color.BLACK);
             }
         }
     }

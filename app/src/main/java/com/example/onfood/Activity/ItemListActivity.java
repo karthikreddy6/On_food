@@ -37,7 +37,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
     private ProgressBar progressBar;
     private CartManager cartManager;
     private BadgeDrawable badgeDrawable;
-
+private TextView CategoriesTitel;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +45,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
 
         View navigationBar = getLayoutInflater().inflate(R.layout.navigation_bar, null);
         ((ViewGroup) findViewById(R.id.navigationContainer)).addView(navigationBar);
-
+        CategoriesTitel = findViewById(R.id.CategoriesTitel);
         ImageButton buttonCart = findViewById(R.id.buttonCart);
         ImageButton buttonProfile = findViewById(R.id.buttonProfile);
         TextView navText = findViewById(R.id.navtext);
@@ -73,7 +73,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
     }
 
     private void setupBottomNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_home) {
@@ -115,6 +115,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
                         categories.add(categoryName);
                     }
                 }
+                CategoriesTitel.setText("Categories");
                 categoryAdapter.notifyDataSetChanged();
             } else {
                 Toast.makeText(ItemListActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();

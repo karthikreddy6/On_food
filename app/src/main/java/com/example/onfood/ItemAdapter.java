@@ -63,13 +63,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             itemPrice = itemView.findViewById(R.id.price);
             itemImage = itemView.findViewById(R.id.foodImage);
             itemQuantity = itemView.findViewById(R.id.quantity);
-            itemdescription = itemView.findViewById(R.id.descerption);
+            itemdescription = itemView.findViewById(R.id.description);
             buttonAddToCart = itemView.findViewById(R.id.addToCart);
         }
 
         public void bind(Item item) {
             itemName.setText(item.getName());
             itemPrice.setText("Price: $" + item.getPrice());
+            itemdescription.setText(item.getDescription());
             updateQuantityDisplay(item);
 
             // Load image using Glide with error handling

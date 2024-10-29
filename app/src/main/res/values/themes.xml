@@ -1,9 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.OnFood" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/purple_500</item>
+        <!-- Optional: For light status bar with dark icons -->
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Theme.OnFood" parent="Base.Theme.OnFood" />
+
 </resources>

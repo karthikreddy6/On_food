@@ -45,7 +45,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         orderIdTextView = findViewById(R.id.orderId);
         totalPriceTextView = findViewById(R.id.totalPriceTextView);
         orderDetailsTextView = findViewById(R.id.textView3);
-        orderTimeTextView = findViewById(R.id.timeView);
+        orderTimeTextView = findViewById(R.id.orderDateTextView);
         ordersRef = FirebaseDatabase.getInstance().getReference("Orders");
 
         // Get the order ID from the intent
