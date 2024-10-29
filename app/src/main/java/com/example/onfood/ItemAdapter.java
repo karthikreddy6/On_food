@@ -91,7 +91,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     if (addToCartListener != null) {
                         addToCartListener.onAddToCart(item);
                     }
-                    Toast.makeText(itemView.getContext(), "Added 1 item to Cart", Toast.LENGTH_SHORT).show();
                     updateQuantityDisplay(item);
                 } else {
                     Toast.makeText(itemView.getContext(), "Error: Item ID is null", Toast.LENGTH_SHORT).show();
