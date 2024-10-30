@@ -40,10 +40,6 @@ public class OrderHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
 
-        // Include navigation bar
-        View navigationBar = getLayoutInflater().inflate(R.layout.navigation_bar, null);
-        ((ViewGroup) findViewById(R.id.navigationContainer)).addView(navigationBar);
-
         ImageButton buttonBack = findViewById(R.id.buttonBack);
         TextView navText = findViewById(R.id.navtext);
         buttonBack.setOnClickListener(v -> onBackPressed());

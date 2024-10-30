@@ -29,8 +29,6 @@ public class ProfileActivity extends AppCompatActivity {
         textViewPhone = findViewById(R.id.textViewPhone);
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
-        View navigationBar = getLayoutInflater().inflate(R.layout.navigation_bar, null);
-        ((ViewGroup) findViewById(R.id.navigationContainer)).addView(navigationBar);
 
         // In OrderConfirmationActivity.java
         ImageButton buttonBack = findViewById(R.id.buttonBack);
@@ -60,8 +58,8 @@ public class ProfileActivity extends AppCompatActivity {
                             String name = document.getString("name");
                             String phone = document.getString("phone");
 
-                            textViewName.setText("Name: " + name);
-                            textViewPhone.setText("Phone: " + phone);
+                            textViewName.setText( name);
+                            textViewPhone.setText( phone);
                         } else {
                             Toast.makeText(ProfileActivity.this, "No profile found", Toast.LENGTH_SHORT).show();
                         }

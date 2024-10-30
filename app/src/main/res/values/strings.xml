@@ -12,4 +12,6 @@
     <string name="order_date">order_date</string>
     <string name="order_time">order_time\n</string>
     <string name="Logout">logout\n</string>
+    <string name="view_details">view details</string>
+    <string name="track_order">track order</string>
 </resources>

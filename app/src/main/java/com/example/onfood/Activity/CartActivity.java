@@ -38,8 +38,6 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
         placeorder = findViewById(R.id.buttonPlaceOrder);
 
-        View navigationBar = getLayoutInflater().inflate(R.layout.navigation_bar, null);
-        ((ViewGroup) findViewById(R.id.navigationContainer)).addView(navigationBar);
 
         ImageButton buttonBack = findViewById(R.id.buttonBack);
         ImageButton buttonCart = findViewById(R.id.buttonCart);

@@ -28,9 +28,6 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_confirmation);
 
-        // Include navigation bar
-        View navigationBar = getLayoutInflater().inflate(R.layout.navigation_bar, null);
-        ((ViewGroup) findViewById(R.id.navigationContainer)).addView(navigationBar);
 
         ImageButton buttonBack = findViewById(R.id.buttonBack);
         ImageButton buttonCart = findViewById(R.id.buttonCart);
