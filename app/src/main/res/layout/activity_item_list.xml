@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white">
+
     <include
         android:id="@+id/navigationBar"
         layout="@layout/navigation_bar"
@@ -12,10 +13,14 @@
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="top"
         app:layout_collapseMode="pin" />
-    <ScrollView
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,9 +43,10 @@
                 android:orientation="horizontal"
                 android:clipToPadding="false"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp"/>
+                android:paddingEnd="16dp"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"/>
 
-            <!-- Categories -->
             <TextView
                 android:id="@+id/CategoriesTitel"
                 android:layout_width="wrap_content"
@@ -55,31 +61,34 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewCategories"
                 android:layout_width="match_parent"
-                android:background="#00FFFFFF"
                 android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
                 android:scrollbars="horizontal"
-             />
-
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:clipToPadding="false"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:clipToPadding="false"/>
-
-            <!-- Today's Special -->
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"/>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         app:menu="@menu/menu_nav"
+        android:elevation="8dp"
         app:labelVisibilityMode="unlabeled"/>
 
 </LinearLayout>

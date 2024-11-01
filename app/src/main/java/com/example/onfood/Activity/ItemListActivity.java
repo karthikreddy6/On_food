@@ -3,15 +3,18 @@ package com.example.onfood.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.EdgeEffect;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onfood.CartManager;
@@ -34,17 +37,27 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
     private FirebaseFirestore db;
     private List<Item> itemList = new ArrayList<>();
     private List<Item> horizontalItemList = new ArrayList<>();
-    private ProgressBar progressBar;
     private CartManager cartManager;
     private BadgeDrawable badgeDrawable;
     private TextView CategoriesTitel;
+    private NestedScrollView nestedScrollView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
-         CategoriesTitel = findViewById(R.id.CategoriesTitel);
+        initializeViews();
+        setupRecyclerViews();
+        setupScrollBehavior();
+        setupBottomNavigation();
+        setupCategoryRecyclerView();
+        loadItemsFromFirestore();
+    }
+
+    private void initializeViews() {
+        nestedScrollView = findViewById(R.id.nestedScrollView);
+        CategoriesTitel = findViewById(R.id.CategoriesTitel);
         ImageButton buttonCart = findViewById(R.id.buttonCart);
         ImageButton buttonProfile = findViewById(R.id.buttonProfile);
         TextView navText = findViewById(R.id.navtext);
@@ -53,22 +66,74 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         buttonCart.setVisibility(View.VISIBLE);
         buttonProfile.setVisibility(View.VISIBLE);
 
+        buttonCart.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, OrderHistoryActivity.class)));
+        buttonProfile.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, ProfileActivity.class)));
+    }
+
+    private void setupRecyclerViews() {
         recyclerViewItems = findViewById(R.id.recyclerViewItems);
         recyclerViewCategories = findViewById(R.id.recyclerViewCategories);
         recyclerViewHorizontalItems = findViewById(R.id.recyclerViewHorizontalItems);
 
-        recyclerViewItems.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewCategories.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewHorizontalItems.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        // Setup horizontal items RecyclerView
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewHorizontalItems.setLayoutManager(horizontalLayoutManager);
+        recyclerViewHorizontalItems.setHasFixedSize(true);
 
-        cartManager = CartManager.getInstance(this); // Initialize CartManager
-        setupBottomNavigation();
+        // Setup categories RecyclerView
+        LinearLayoutManager categoriesLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewCategories.setLayoutManager(categoriesLayoutManager);
+        recyclerViewCategories.setHasFixedSize(true);
 
-        buttonCart.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, OrderHistoryActivity.class)));
-        buttonProfile.setOnClickListener(v -> startActivity(new Intent(ItemListActivity.this, ProfileActivity.class)));
+        // Setup main items RecyclerView
+        LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(this) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        recyclerViewItems.setLayoutManager(verticalLayoutManager);
+        recyclerViewItems.setHasFixedSize(true);
 
-        setupCategoryRecyclerView();
-        loadItemsFromFirestore();
+        cartManager = CartManager.getInstance(this);
+    }
+
+    private void setupScrollBehavior() {
+        // Add smooth scroll behavior
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY,
+                                       int oldScrollX, int oldScrollY) {
+                // Add fade effect for the navigation bar when scrolling
+                float ratio = Math.min(1, scrollY / 200f);
+                findViewById(R.id.navigationBar).setAlpha(1 - ratio * 0.4f);
+            }
+        });
+
+        // Add smooth scrolling for horizontal RecyclerViews
+        PagerSnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(recyclerViewHorizontalItems);
+
+        // Add fade edge effect for RecyclerViews
+        recyclerViewHorizontalItems.setEdgeEffectFactory(new RecyclerView.EdgeEffectFactory() {
+            @NonNull
+            @Override
+            protected EdgeEffect createEdgeEffect(@NonNull RecyclerView view, int direction) {
+                EdgeEffect edgeEffect = new EdgeEffect(view.getContext());
+                edgeEffect.setColor(ContextCompat.getColor(view.getContext(), R.color.primary_color));
+                return edgeEffect;
+            }
+        });
+
+        recyclerViewCategories.setEdgeEffectFactory(new RecyclerView.EdgeEffectFactory() {
+            @NonNull
+            @Override
+            protected EdgeEffect createEdgeEffect(@NonNull RecyclerView view, int direction) {
+                EdgeEffect edgeEffect = new EdgeEffect(view.getContext());
+                edgeEffect.setColor(ContextCompat.getColor(view.getContext(), R.color.primary_color));
+                return edgeEffect;
+            }
+        });
     }
 
     private void setupBottomNavigation() {
@@ -112,7 +177,6 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
                         categories.add(categoryName);
                     }
                 }
-                CategoriesTitel.setText("Categories");
                 categoryAdapter.notifyDataSetChanged();
             } else {
                 Toast.makeText(ItemListActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
@@ -134,7 +198,6 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
                         itemList.add(item);
                     }
                 }
-                // Pass CartManager to the adapter for vertical items
                 ItemAdapter adapter = new ItemAdapter(itemList, cartManager, this);
                 recyclerViewItems.setAdapter(adapter);
             } else {
@@ -142,7 +205,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
             }
         });
 
-        // Fetch horizontal items from another path
+        // Fetch horizontal items
         db.collection("SplMenuItem").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 horizontalItemList.clear();
@@ -153,7 +216,6 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
                         horizontalItemList.add(item);
                     }
                 }
-                // Set up the horizontal item view adapter
                 HorizontalItemAdapter horizontalAdapter = new HorizontalItemAdapter(horizontalItemList, cartManager, this);
                 recyclerViewHorizontalItems.setAdapter(horizontalAdapter);
             } else {

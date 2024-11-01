@@ -1,6 +1,7 @@
 package com.example.onfood;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,5 +28,29 @@ public class FirestoreSetup {
                 .addOnFailureListener(e -> {
                     System.err.println("Error writing version info: " + e.getMessage());
                 });
+    }
+
+    // Method to fetch version info
+    public void fetchVersionInfo(OnVersionInfoFetchedListener listener) {
+        db.collection("appInfo").document("versionInfo")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String latestVersion = documentSnapshot.getString("latestVersion");
+                        String updateUrl = documentSnapshot.getString("updateUrl");
+                        listener.onSuccess(latestVersion, updateUrl);
+                    } else {
+                        listener.onFailure("Document does not exist");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    listener.onFailure("Error fetching version info: " + e.getMessage());
+                });
+    }
+
+    // Listener interface for version info fetch
+    public interface OnVersionInfoFetchedListener {
+        void onSuccess(String latestVersion, String updateUrl);
+        void onFailure(String errorMessage);
     }
 }

@@ -1,41 +1,41 @@
 package com.example.onfood;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.DocumentSnapshot;
+import android.net.Uri;
 
 public class VersionChecker {
-    private FirebaseFirestore db;
+    private FirestoreSetup firestoreSetup;
 
     public VersionChecker() {
-        db = FirebaseFirestore.getInstance();
+        firestoreSetup = new FirestoreSetup();
     }
 
     // Method to check the current app version against Firestore
     public void checkForUpdates(Context context) {
         String currentVersion = getCurrentAppVersion(context);
 
-        db.collection("appInfo").document("versionInfo")
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String latestVersion = documentSnapshot.getString("latestVersion");
-                        String updateUrl = documentSnapshot.getString("updateUrl");
-
-                        if (latestVersion != null && currentVersion != null) {
-                            if (isVersionLower(currentVersion, latestVersion)) {
-                                // Prompt user to update
-                                promptUserToUpdate(updateUrl);
-                            }
-                        }
+        firestoreSetup.fetchVersionInfo(new FirestoreSetup.OnVersionInfoFetchedListener() {
+            @Override
+            public void onSuccess(String latestVersion, String updateUrl) {
+                if (latestVersion != null && currentVersion != null) {
+                    if (isVersionLower(currentVersion, latestVersion)) {
+                        // Prompt user to update
+                        promptUserToUpdate(context, updateUrl);
                     }
-                })
-                .addOnFailureListener(e -> {
-                    System.err.println("Error fetching version info: " + e.getMessage());
-                });
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                // Handle the error appropriately
+                System.err.println("Error fetching version info: " + errorMessage);
+            }
+        });
     }
 
     // Method to get the current app version
@@ -54,10 +54,19 @@ public class VersionChecker {
         return currentVersion.compareTo(latestVersion) < 0; // Compare version strings
     }
 
-    // Method to prompt the user to update (you can customize this)
-    private void promptUserToUpdate(String updateUrl) {
-        // Implement a dialog or toast to prompt the user to download the latest version
-        System.out.println("A new version is available! Please update from: " + updateUrl);
-        // You might want to open a browser or an intent to download the new version
+    // Method to prompt the user to update
+    private void promptUserToUpdate(Context context, String updateUrl) {
+        new AlertDialog.Builder(context)
+                .setTitle("Update Available")
+                .setMessage("A new version is available! Please update to the latest version.")
+                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Open the update URL in a browser or handle it accordingly
+                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl)));
+                        System.out.println("Redirecting to update URL: " + updateUrl);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }
