@@ -1,21 +1,37 @@
 package com.example.onfood.Activity;
 
+import static com.example.onfood.R.id.viewFlipper;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintSet;
 
+import com.example.onfood.LoadingView;
 import com.example.onfood.R;
 import com.example.onfood.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthEmailException;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -29,6 +45,9 @@ public class Authentication extends AppCompatActivity {
     private Button loginButton, registerButton, switchToRegisterButton, switchToLoginButton;
     private ViewFlipper viewFlipper;
     private RelativeLayout Singuptoogle,Logintoogle;
+    private ProgressBar progressBar,progressBar1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +128,7 @@ public class Authentication extends AppCompatActivity {
             Toast.makeText(Authentication.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        setloadindscreen(); //loading screen start
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -131,8 +150,26 @@ public class Authentication extends AppCompatActivity {
                                     }
                                 });
                     } else {
-                        Toast.makeText(Authentication.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                        try {
+                            throw task.getException();
+                        } catch (FirebaseAuthUserCollisionException e) {
+                            // Email is already registered
+                            showSnackbar("Email is already registered.");
+                        } catch (FirebaseAuthWeakPasswordException e) {
+                            // Password is too weak
+                            showSnackbar("Password is too weak. It should be at least 6 characters.");
+                        } catch (FirebaseAuthEmailException e) {
+                            // Invalid email format
+                            showSnackbar("Invalid email format.");
+                        } catch (FirebaseAuthException e) {
+                            // General signup failure
+                        showSnackbar("Signup failed. Please try again.");
+                        } catch (Exception e) {
+                            // Other unexpected errors
+                        showSnackbar("Signup failed. Please try again.");
+                        }
                     }
+
                 });
     }
 
@@ -144,15 +181,54 @@ public class Authentication extends AppCompatActivity {
             Toast.makeText(Authentication.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        setloadindscreen();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         startActivity(new Intent(Authentication.this, ItemListActivity.class));
                         finish(); // Finish the activity
                     } else {
-                        Toast.makeText(Authentication.this, "Login failed", Toast.LENGTH_SHORT).show();
+                        // Log the full exception to understand which error occurred
+                        Exception exception = task.getException();
+                        Log.e("LoginError", "Error: " + exception.getMessage(), exception);
+                        try {
+                            throw exception;
+                        } catch (FirebaseAuthInvalidUserException e) {
+                            // No user found with the email
+                            showSnackbar("No user found with this email.");
+                        } catch (FirebaseAuthInvalidCredentialsException e) {
+                            // Incorrect password
+                            showSnackbar("Incorrect password. Please try again.");
+                        } catch (FirebaseAuthException e) {
+                            // General Firebase authentication error
+                            showSnackbar("Authentication failed. Please try again.");
+                        } catch (Exception e) {
+                            // Other unexpected errors
+                            showSnackbar("Login failed. Please check your credentials.");
+                        }
                     }
                 });
+    }
+    private void showSnackbar(String message) {
+        rmLoadingView();
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void rmLoadingView(){
+        progressBar.setVisibility(View.GONE);
+        progressBar1.setVisibility(View.GONE);
+        loginButton.setVisibility(View.VISIBLE);
+        registerButton.setVisibility(View.VISIBLE);
+    }
+
+    private  void setloadindscreen(){
+        progressBar=findViewById(R.id.progersbar2);
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar1=findViewById(R.id.progersbar3);
+        progressBar1.setVisibility(View.VISIBLE);
+        loginButton.setVisibility(View.GONE);
+        registerButton.setVisibility(View.GONE);
+
+
     }
 }

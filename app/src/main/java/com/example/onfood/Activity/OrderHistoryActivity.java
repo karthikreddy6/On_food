@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
     private DatabaseReference ordersRef;
     private FirebaseAuth mAuth;
     private List<Order> orderList;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
         ImageButton buttonBack = findViewById(R.id.buttonBack);
         TextView navText = findViewById(R.id.navtext);
+        progressBar = findViewById(R.id.progressBar);
         buttonBack.setOnClickListener(v -> onBackPressed());
         buttonBack.setVisibility(View.VISIBLE);
         navText.setText("HISTORY");
@@ -52,6 +55,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         orderList = new ArrayList<>();
         ordersRef = FirebaseDatabase.getInstance().getReference("Orders");
         mAuth = FirebaseAuth.getInstance();
+        progressBar.setVisibility(View.VISIBLE);
 
         fetchOrderHistory();
     }
@@ -89,6 +93,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
                 } else {
                     OrderAdapter adapter = new OrderAdapter(orderList);
                     recyclerViewOrders.setAdapter(adapter);
+                    progressBar.setVisibility(View.GONE);
 
                     adapter.setOnItemClickListener(position -> {
                         String selectedOrderId = orderList.get(position).getOrderId();

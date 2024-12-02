@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.List;
 
-public class HorizontalItemAdapter extends RecyclerView.Adapter<HorizontalItemAdapter.HorizontalItemViewHolder> {
+public class HorizontalItemAdapter extends RecyclerView.Adapter<HorizontalItemAdapter.HorizontalItemViewHolder> implements CartChangeListener {
 
     private List<Item> itemList;
     private CartManager cartManager;
@@ -21,6 +21,7 @@ public class HorizontalItemAdapter extends RecyclerView.Adapter<HorizontalItemAd
         this.itemList = itemList;
         this.cartManager = cartManager;
         this.addToCartListener = addToCartListener;
+        this.cartManager.registerCartChangeListener(this); // Register listener
     }
 
     @NonNull
@@ -33,7 +34,7 @@ public class HorizontalItemAdapter extends RecyclerView.Adapter<HorizontalItemAd
     @Override
     public void onBindViewHolder(@NonNull HorizontalItemViewHolder holder, int position) {
         Item item = itemList.get(position);
-        holder.bind(item);
+        holder.bind(item); // Bind the item to the ViewHolder
     }
 
     @Override
@@ -51,7 +52,7 @@ public class HorizontalItemAdapter extends RecyclerView.Adapter<HorizontalItemAd
             itemImage = itemView.findViewById(R.id.itemImage);
             itemName = itemView.findViewById(R.id.itemName);
             itemPrice = itemView.findViewById(R.id.itemPrice);
-            itemQuantity = itemView.findViewById(R.id.quantity); // Assuming you have this TextView in sp_item_layout
+            itemQuantity = itemView.findViewById(R.id.quantity);
             addToCartButton = itemView.findViewById(R.id.addToCartButton);
         }
 
@@ -62,27 +63,32 @@ public class HorizontalItemAdapter extends RecyclerView.Adapter<HorizontalItemAd
                     .load(item.getImageUrl())
                     .into(itemImage); // Load image using Glide
 
-            // Set initial quantity visibility
-            int quantity = cartManager.getItemQuantity(item);
-            if (quantity > 0) {
-                itemQuantity.setVisibility(View.VISIBLE);
-                itemQuantity.setText(String.valueOf(quantity));
-                addToCartButton.setVisibility(View.GONE); // Hide button if item is already in cart
-            } else {
-                itemQuantity.setVisibility(View.GONE);
-                addToCartButton.setVisibility(View.VISIBLE); // Show button if item is not in cart
-            }
+            updateQuantityDisplay(item); // Update the quantity display based on cart state
 
             addToCartButton.setOnClickListener(v -> {
-                cartManager.addToCart(item);
-                itemQuantity.setVisibility(View.VISIBLE); // Show quantity TextView
-                itemQuantity.setText(String.valueOf(cartManager.getItemQuantity(item))); // Update quantity
-                addToCartButton.setVisibility(View.GONE); // Hide the button after adding to cart
-
+                cartManager.addToCart(item); // Add item to cart
+                updateQuantityDisplay(item); // Update the quantity display after adding to cart
                 if (addToCartListener != null) {
-                    addToCartListener.onAddToCart(item);
+                    addToCartListener.onAddToCart(item); // Notify listener if needed
                 }
             });
         }
+
+        private void updateQuantityDisplay(Item item) {
+            int quantity = cartManager.getItemQuantity(item); // Get the current quantity in the cart
+            if (quantity > 0) {
+                itemQuantity.setVisibility(View.VISIBLE);
+                itemQuantity.setText(String.valueOf(quantity)); // Show the quantity
+                addToCartButton.setVisibility(View.GONE); // Hide the Add to Cart button
+            } else {
+                itemQuantity.setVisibility(View.GONE);
+                addToCartButton.setVisibility(View.VISIBLE); // Show the Add to Cart button if not in cart
+            }
+        }
+    }
+
+    @Override
+    public void onCartChanged() {
+        notifyDataSetChanged(); // Notify data change to refresh views
     }
 }

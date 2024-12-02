@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/profileImageView"
                     android:layout_marginTop="8dp"
-                    android:text="John Doe"
+                    android:text="karthik"
                     android:textColor="@color/text_primary"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -56,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/textViewName"
-                    android:text="john.doe@example.com"
+                    android:text="karthikreddy.com.in"
                     android:textColor="@color/text_secondary"
                     android:textSize="16sp" />
 
@@ -97,7 +97,7 @@
                             android:id="@+id/ordersCountTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="28"
+                            android:text="69"
                             android:textColor="@color/text_primary"
                             android:textSize="24sp"
                             android:textStyle="bold" />
@@ -121,7 +121,7 @@
                             android:id="@+id/reviewsCountTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="15"
+                            android:text="57"
                             android:textColor="@color/text_primary"
                             android:textSize="24sp"
                             android:textStyle="bold" />
@@ -145,7 +145,7 @@
                             android:id="@+id/pointsTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="520"
+                            android:text="042"
                             android:textColor="@color/text_primary"
                             android:textSize="24sp"
                             android:textStyle="bold" />

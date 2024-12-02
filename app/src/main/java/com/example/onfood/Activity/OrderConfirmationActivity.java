@@ -61,9 +61,9 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                     String time = dataSnapshot.child("orderTime").getValue(String.class).toString();
                     String date = dataSnapshot.child("orderDate").getValue(String.class).toString();
 
-                    orderIdTextView.setText("Order ID: " + orderId);
-                    totalPriceTextView.setText("Total Amount: $" + amount);
-                    orderTimeTextView.setText("Order Time: " +date+" ("+time+" )");
+                    orderIdTextView.setText("" + orderId);
+                    totalPriceTextView.setText("Total Amount: " + amount);
+                    orderTimeTextView.setText("" +date+" ("+time+" )");
                     StringBuilder orderDetails = new StringBuilder();
                     for (DataSnapshot itemSnapshot : dataSnapshot.child("items").getChildren()) {
                         String name = itemSnapshot.child("name").getValue(String.class);

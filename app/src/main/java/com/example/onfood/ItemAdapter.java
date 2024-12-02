@@ -1,8 +1,5 @@
 package com.example.onfood;
 
-
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,20 +7,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
-
 import java.util.List;
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> implements CartChangeListener {
     private List<Item> itemList;
     private CartManager cartManager;
     private OnAddToCartListener addToCartListener;
 
-    // Interface to notify activity when an item is added to the cart
     public interface OnAddToCartListener {
         void onAddToCart(Item item);
     }
@@ -32,6 +25,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         this.itemList = itemList;
         this.cartManager = cartManager;
         this.addToCartListener = addToCartListener;
+        this.cartManager.registerCartChangeListener(this); // Register listener
     }
 
     @NonNull
@@ -69,11 +63,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
         public void bind(Item item) {
             itemName.setText(item.getName());
-            itemPrice.setText("Price: $" + item.getPrice());
+            itemPrice.setText("Price: " + item.getPrice());
             itemdescription.setText(item.getDescription());
+
             updateQuantityDisplay(item);
 
-            // Load image using Glide with error handling
             Glide.with(itemImage.getContext())
                     .load(item.getImageUrl())
                     .placeholder(R.drawable.image)  // Set a placeholder
@@ -81,22 +75,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     .into(itemImage);
 
             buttonAddToCart.setOnClickListener(v -> {
-                // Disable button to avoid double-click issues
                 buttonAddToCart.setEnabled(false);
-
-                Log.d("ItemAdapter", "Add to Cart clicked for item: " + item.getName());
-
-                if (item.getId() != null) {
-                    cartManager.addToCart(item);
-                    if (addToCartListener != null) {
-                        addToCartListener.onAddToCart(item);
-                    }
-                    updateQuantityDisplay(item);
-                } else {
-                    Toast.makeText(itemView.getContext(), "Error: Item ID is null", Toast.LENGTH_SHORT).show();
+                cartManager.addToCart(item);
+                if (addToCartListener != null) {
+                    addToCartListener.onAddToCart(item);
                 }
-
-                // Re-enable button after a short delay
+                updateQuantityDisplay(item);
                 buttonAddToCart.postDelayed(() -> buttonAddToCart.setEnabled(true), 500);
             });
         }
@@ -105,5 +89,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             int quantity = cartManager.getItemQuantity(item);
             itemQuantity.setText("Quantity: " + quantity);
         }
+    }
+
+    @Override
+    public void onCartChanged() {
+        notifyDataSetChanged(); // Notify data change to refresh views
     }
 }

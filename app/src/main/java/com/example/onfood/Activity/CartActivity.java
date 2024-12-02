@@ -6,15 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onfood.CartAdapter;
 import com.example.onfood.CartItem;
 import com.example.onfood.CartManager;
+import com.example.onfood.LoadingView;
 import com.example.onfood.OrderManager;
 import com.example.onfood.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +34,10 @@ public class CartActivity extends AppCompatActivity {
     public Button placeorder;
     public TextView totalAmountTextView;
     private FirebaseAuth mAuth;
+    private LoadingView loadingView;
+    private ConstraintLayout rootLayout;
+private View totalam;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +68,8 @@ public class CartActivity extends AppCompatActivity {
 
         placeorder.setOnClickListener(v -> {
             String userId = currentUser.getUid();  // Get the Firebase User ID (UID)
-
+            setloadindscreen();
+            rmLoadingView();
             // Place the order in Firebase Realtime Database
             orderManager.placeOrder(userId, orderId -> {
                 // Navigate to OrderConfirmationActivity with the order ID
@@ -77,17 +85,10 @@ public class CartActivity extends AppCompatActivity {
         loadCartItems();
         displayTotalAmount();
     }
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        Intent intent = new Intent(this, ItemListActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
-//        finish(); // Optional: to close the current activity
-//    }
+
     public void displayTotalAmount() {
         double totalAmount = cartManager.getTotalAmount();
-        totalAmountTextView.setText("Total Amount: $" + totalAmount);  // Display total amount
+        totalAmountTextView.setText("Total Amount: " + totalAmount);  // Display total amount
     }
 
     private void loadCartItems() {
@@ -105,6 +106,24 @@ public class CartActivity extends AppCompatActivity {
         // Set the adapter with the cart items and CartManager
         CartAdapter cartAdapter = new CartAdapter(cartItems, cartManager, this);
         recyclerViewCartItems.setAdapter(cartAdapter);
+    }
+    private void rmLoadingView(){
+        rootLayout.postDelayed(() -> {
+            loadingView.setVisibility(View.GONE); // Hide the loading view
+            rootLayout.setVisibility(View.VISIBLE); // Show the main content
+            rootLayout.requestLayout(); // Refresh layout
+            rootLayout.invalidate(); // Redraw layout
+        }, 1500); // Adjust this delay
+    }
+
+    private  void setloadindscreen(){
+        rootLayout = findViewById(R.id.cart);
+        totalam =findViewById(R.id.total);
+        totalam.setVisibility(View.GONE);
+        loadingView = new LoadingView(this);
+        loadingView.setVisibility(View.VISIBLE);
+        rootLayout.addView(loadingView);
+
     }
 
 }

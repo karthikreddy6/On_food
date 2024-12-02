@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.EdgeEffect;
@@ -21,6 +22,7 @@ import com.example.onfood.CartManager;
 import com.example.onfood.Item;
 import com.example.onfood.ItemAdapter;
 import com.example.onfood.HorizontalItemAdapter;
+import com.example.onfood.LoadingView;
 import com.example.onfood.R;
 import com.example.onfood.CategoryAdapter;
 import com.google.android.material.badge.BadgeDrawable;
@@ -41,12 +43,15 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
     private BadgeDrawable badgeDrawable;
     private TextView CategoriesTitel;
     private NestedScrollView nestedScrollView;
+    private LoadingView loadingView;
+    private   LinearLayout rootLayout;
 
+    private View bottemnav;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
-
+        setloadindscreen();
         initializeViews();
         setupRecyclerViews();
         setupScrollBehavior();
@@ -54,6 +59,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         setupCategoryRecyclerView();
         loadItemsFromFirestore();
     }
+
 
     private void initializeViews() {
         nestedScrollView = findViewById(R.id.nestedScrollView);
@@ -200,6 +206,8 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
                 }
                 ItemAdapter adapter = new ItemAdapter(itemList, cartManager, this);
                 recyclerViewItems.setAdapter(adapter);
+                rmLoadingView();
+
             } else {
                 Toast.makeText(ItemListActivity.this, "Failed to load vertical items", Toast.LENGTH_SHORT).show();
             }
@@ -255,5 +263,23 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         } else {
             badgeDrawable.setVisible(false);
         }
+    }
+    private void rmLoadingView(){
+        loadingView.setVisibility(View.GONE); // Hide the loading view
+        rootLayout.setVisibility(View.VISIBLE); // Show the main content
+        bottemnav.setVisibility(View.VISIBLE);
+        rootLayout.requestLayout(); // Refresh layout
+        rootLayout.invalidate(); // Redraw layout
+    }
+
+    private  void setloadindscreen(){
+        bottemnav=findViewById(R.id.bottomNavigation);
+
+        rootLayout = findViewById(R.id.item_list);
+        loadingView = new LoadingView(this);
+        loadingView.setVisibility(View.VISIBLE);
+        bottemnav.setVisibility(View.GONE);
+        rootLayout.addView(loadingView);
+
     }
 }

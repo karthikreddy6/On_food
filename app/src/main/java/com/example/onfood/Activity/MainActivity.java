@@ -3,69 +3,80 @@ package com.example.onfood.Activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.example.onfood.LoadingView;
 import com.example.onfood.R;
-import com.example.onfood.VersionChecker; // Import the VersionChecker
+import com.example.onfood.VersionChecker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     private Button button, logout;
     private FirebaseAuth mAuth;
+    private LoadingView loadingView;
+
     private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        button = findViewById(R.id.button);
-        logout = findViewById(R.id.button2);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        if (!isNotificationPermissionGranted()) {
-            requestNotificationPermission();
-        }
+        // Initialize root layout and loading view
+        ConstraintLayout rootLayout = findViewById(R.id.main);
+        loadingView = new LoadingView(this);
+        loadingView.setVisibility(View.VISIBLE); // Show loading view immediately
+        rootLayout.addView(loadingView);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        // Request notification permission if needed
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!isNotificationPermissionGranted()) {
+                requestNotificationPermission();
+            }
+        }
 
         // Check for updates on app start
         VersionChecker versionChecker = new VersionChecker();
         versionChecker.checkForUpdates(this);
 
+        // Set up buttons
+        button = findViewById(R.id.button);
+        logout = findViewById(R.id.button2);
+
         button.setOnClickListener(view -> {
             FirebaseUser currentUser = mAuth.getCurrentUser();
             if (currentUser != null) {
-                // User is logged in, proceed to the next screen
                 Toast.makeText(MainActivity.this, "Logged in", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, ItemListActivity.class);
                 startActivity(intent);
             } else {
-                // User is not logged in, show the login screen
                 Intent intent = new Intent(MainActivity.this, Authentication.class);
                 startActivity(intent);
             }
         });
 
         logout.setOnClickListener(v -> logoutUser());
+
+        // Hide the loading view after tasks are completed
+        rootLayout.postDelayed(() -> {
+            loadingView.setVisibility(View.GONE); // Hide the loading view
+            rootLayout.setVisibility(View.VISIBLE); // Show the main content
+            rootLayout.requestLayout(); // Refresh layout
+            rootLayout.invalidate(); // Redraw layout
+        }, 2000); // Adjust this delay as needed based on your tasks
     }
 
     private boolean isNotificationPermissionGranted() {
@@ -88,9 +99,8 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, proceed with sending notifications
+                // Permission granted
             } else {
-                // Permission denied, handle accordingly (e.g., show a message)
                 Toast.makeText(this, "Notification permission required to send notifications.", Toast.LENGTH_SHORT).show();
             }
         }
