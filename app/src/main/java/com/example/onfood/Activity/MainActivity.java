@@ -17,11 +17,12 @@ import androidx.core.content.ContextCompat;
 import com.example.onfood.LoadingView;
 import com.example.onfood.R;
 import com.example.onfood.VersionChecker;
+import com.example.onfood.test;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
-    private Button button, logout;
+    private Button button, test_b;
     private FirebaseAuth mAuth;
     private LoadingView loadingView;
 
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up buttons
         button = findViewById(R.id.button);
-        logout = findViewById(R.id.button2);
+//        test_b = findViewById(R.id.button2);
 
         button.setOnClickListener(view -> {
             FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        logout.setOnClickListener(v -> logoutUser());
+        test_b.setOnClickListener(v ->startActivity(new Intent(MainActivity.this, test.class)) );
 
         // Hide the loading view after tasks are completed
         rootLayout.postDelayed(() -> {
@@ -106,8 +107,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void logoutUser() {
-        FirebaseAuth.getInstance().signOut();
-        Toast.makeText(this, "Logged out successfully.", Toast.LENGTH_SHORT).show();
-    }
+
 }

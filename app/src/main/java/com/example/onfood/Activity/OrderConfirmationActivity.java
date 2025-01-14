@@ -34,7 +34,23 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         TextView navText = findViewById(R.id.navtext);
         navText.setText("ORDER STATUS");
 
-        buttonCart.setOnClickListener(v -> startActivity(new Intent(OrderConfirmationActivity.this, OrderHistoryActivity.class)));
+        buttonCart.setOnClickListener(v -> {
+            // Check the source from the intent
+            String source = getIntent().getStringExtra("source");
+
+            if ("cart".equals(source)) {
+                // If coming from Cart, open a new OrderHistoryActivity
+                startActivity(new Intent(OrderConfirmationActivity.this, OrderHistoryActivity.class));
+            } else {
+                // If coming from History, just bring the existing OrderHistoryActivity to the front
+                Intent intent = new Intent(OrderConfirmationActivity.this, OrderHistoryActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);  // Brings existing instance to the front
+                startActivity(intent);
+            }
+
+            finish();  // Close the OrderConfirmationActivity
+        });
+
         buttonBack.setOnClickListener(v -> onBackPressed());
 
         buttonBack.setVisibility(View.VISIBLE);

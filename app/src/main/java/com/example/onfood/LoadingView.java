@@ -2,15 +2,35 @@ package com.example.onfood;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.RelativeLayout;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class LoadingView extends RelativeLayout {
 
-    private ImageView foodItem1, foodItem2, foodItem3;
-    private float rotationAngle = 360f; // Complete rotation in degrees
+    private TextView tvFoodIcon, tvLoadingText;
+    private ObjectAnimator bounceAnimation;
+    private Handler handler;
+
+    // Food emojis array
+    private final String[] foodEmojis = {
+            "😋", "🍔", "🍜", "🥗", "🍱", "🌮", "🍣", "🍪"
+    };
+
+    // Loading messages
+    private final String[] loadingMessages = {
+            "Finding best recipes...",
+            "Preparing your feed...",
+            "Almost ready!"
+    };
+
+    private int currentFoodIndex = 0;
+    private int currentMessageIndex = 0;
 
     public LoadingView(Context context) {
         super(context);
@@ -31,66 +51,60 @@ public class LoadingView extends RelativeLayout {
         // Inflate the custom layout for loading screen
         LayoutInflater.from(context).inflate(R.layout.activity_loading_view, this, true);
 
-        // Find food items in the layout
-        foodItem1 = findViewById(R.id.food_item1);
+        // Find views in the layout
+        tvFoodIcon = findViewById(R.id.tvFoodIcon);
+        tvLoadingText = findViewById(R.id.tvLoadingText);
 
+        // Initialize handler
+        handler = new Handler(Looper.getMainLooper());
 
-        // Start the rotating animation
-        startRotationAnimation();
+        // Setup and start animations
+        setupBounceAnimation();
+        startAnimations();
     }
 
-    private void startRotationAnimation() {
-        // Create ObjectAnimator for each food item to rotate
-        ObjectAnimator rotateFoodItem1 = ObjectAnimator.ofFloat(foodItem1, "rotation", 0f, rotationAngle);
-        ObjectAnimator rotateFoodItem2 = ObjectAnimator.ofFloat(foodItem2, "rotation", 0f, rotationAngle);
-        ObjectAnimator rotateFoodItem3 = ObjectAnimator.ofFloat(foodItem3, "rotation", 0f, rotationAngle);
-
-        // Set the animation to repeat infinitely
-        rotateFoodItem1.setRepeatCount(ObjectAnimator.INFINITE);
-        rotateFoodItem2.setRepeatCount(ObjectAnimator.INFINITE);
-        rotateFoodItem3.setRepeatCount(ObjectAnimator.INFINITE);
-
-        // Set the duration of the animation
-        rotateFoodItem1.setDuration(2000); // 2 seconds for each rotation
-        rotateFoodItem2.setDuration(2000);
-        rotateFoodItem3.setDuration(2000);
-
-        // Set the interpolator to make the animation smooth
-        rotateFoodItem1.setInterpolator(new android.view.animation.LinearInterpolator());
-        rotateFoodItem2.setInterpolator(new android.view.animation.LinearInterpolator());
-        rotateFoodItem3.setInterpolator(new android.view.animation.LinearInterpolator());
-
-        // Start the rotation animations
-        rotateFoodItem1.start();
-        rotateFoodItem2.start();
-        rotateFoodItem3.start();
+    private void setupBounceAnimation() {
+        // Create bounce animation for the emoji
+        bounceAnimation = ObjectAnimator.ofFloat(tvFoodIcon, "translationY", 0f, -30f, 0f);
+        bounceAnimation.setDuration(1000);
+        bounceAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        bounceAnimation.setRepeatCount(ObjectAnimator.INFINITE);
     }
 
-    // Zoom-in effect for the loading view
-    public void applyZoomInEffect() {
-        // Create ObjectAnimator for scaling the loading view
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 0f, 1f);
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 0f, 1f);
+    private void startAnimations() {
+        // Start bounce animation
+        bounceAnimation.start();
 
-        // Set the duration for zoom-in effect (500ms)
-        scaleX.setDuration(500);
-        scaleY.setDuration(500);
-
-        // Use an AccelerateInterpolator for smooth zoom-in effect
-        scaleX.setInterpolator(new android.view.animation.AccelerateInterpolator());
-        scaleY.setInterpolator(new android.view.animation.AccelerateInterpolator());
-
-        // Start the zoom-in animations
-        scaleX.start();
-        scaleY.start();
-
-        // Optionally, show the view after animation completes (if initially hidden)
-        scaleX.addListener(new android.animation.AnimatorListenerAdapter() {
+        // Update food emoji every 500ms
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onAnimationEnd(android.animation.Animator animation) {
-                // The loading view will have finished zooming in
-                setVisibility(VISIBLE); // Ensure the view is visible after animation
+            public void run() {
+                currentFoodIndex = (currentFoodIndex + 1) % foodEmojis.length;
+                tvFoodIcon.setText(foodEmojis[currentFoodIndex]);
+                handler.postDelayed(this, 500);
             }
-        });
+        }, 500);
+
+        // Update loading message every 800ms
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
+                tvLoadingText.setText(loadingMessages[currentMessageIndex]);
+                handler.postDelayed(this, 800);
+            }
+        }, 800);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        // Clean up animations and handlers
+        if (bounceAnimation != null) {
+            bounceAnimation.cancel();
+        }
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 }

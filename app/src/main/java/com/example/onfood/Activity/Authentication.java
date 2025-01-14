@@ -3,6 +3,7 @@ package com.example.onfood.Activity;
 import static com.example.onfood.R.id.viewFlipper;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Authentication extends AppCompatActivity {
@@ -144,6 +146,7 @@ public class Authentication extends AppCompatActivity {
                                 .addOnCompleteListener(userTask -> {
                                     if (userTask.isSuccessful()) {
                                         startActivity(new Intent(Authentication.this, ItemListActivity.class));
+                                        saveUserDataLocally(userId,email,name,phone);
                                         finish(); // Finish the activity
                                     } else {
                                         Toast.makeText(Authentication.this, "Failed to save user info", Toast.LENGTH_SHORT).show();
@@ -185,7 +188,11 @@ public class Authentication extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        startActivity(new Intent(Authentication.this, ItemListActivity.class));
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        String userId = firebaseUser.getUid();  // Get the userId
+
+                        // Fetch user data from Firestore after login
+                        fetchUserDataFromFirestore(userId);
                         finish(); // Finish the activity
                     } else {
                         // Log the full exception to understand which error occurred
@@ -231,4 +238,44 @@ public class Authentication extends AppCompatActivity {
 
 
     }
+    private void saveUserDataLocally(String userId, String name,String email, String phone) {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userId", userId);
+        editor.putString("email", email);
+        editor.putString("name", name);
+        editor.putString("phone", phone);
+        editor.apply(); // Commit the changes
+        Log.d("userdata", "saveUserDataLocally: "+userId+name+phone+ email );
+
+    }
+    private void fetchUserDataFromFirestore(String userId) {
+        firestore.collection("Users")
+                .document(userId)  // Use the userId to directly fetch the user document
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Retrieve user data from the Firestore document
+                        String name = documentSnapshot.getString("name");
+                        String email = documentSnapshot.getString("email");
+                        String phone = documentSnapshot.getString("phone");
+
+                        // Save the user data locally
+                        saveUserDataLocally(userId, name, email, phone);
+
+                        // Proceed to the next activity after saving user data locally
+                        startActivity(new Intent(Authentication.this, ItemListActivity.class));
+                        finish();  // Finish the current activity
+                    } else {
+                        showSnackbar("User data not found.");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    showSnackbar("Failed to fetch user data. Please try again.");
+                });
+    }
+
+
+
+
 }

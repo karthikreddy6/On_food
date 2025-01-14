@@ -74,6 +74,7 @@ private View totalam;
             orderManager.placeOrder(userId, orderId -> {
                 // Navigate to OrderConfirmationActivity with the order ID
                 Intent intent = new Intent(CartActivity.this, OrderConfirmationActivity.class);
+                intent.putExtra("source", "cart");
                 intent.putExtra("ORDER_ID", orderId);
                 cartManager.clearCart();
                 startActivity(intent);

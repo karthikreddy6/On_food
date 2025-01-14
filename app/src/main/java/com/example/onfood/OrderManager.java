@@ -51,6 +51,7 @@ public class OrderManager {
         orderDetails.put("amount", totalAmount);
         orderDetails.put("orderDate", formattedDate);
         orderDetails.put("orderTime", formattedTime);
+        orderDetails.put("status","orderd");
 
         // Create a nested map to store items under "items" node
         Map<String, Object> itemsMap = new HashMap<>();
@@ -62,15 +63,10 @@ public class OrderManager {
             itemDetails.put("name", cartItem.getItem().getName());
             itemDetails.put("price", cartItem.getItem().getPrice());
             itemDetails.put("quantity", cartItem.getQuantity());
-
             // Assign each item a unique key like "item1", "item2", etc.
             itemsMap.put("item" + itemIndex, itemDetails);
             itemIndex++;
         }
-
-
-
-
         // Add the items map to the order details
         orderDetails.put("items", itemsMap);
 
