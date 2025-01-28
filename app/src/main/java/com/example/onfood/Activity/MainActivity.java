@@ -2,11 +2,13 @@ package com.example.onfood.Activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +25,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     private Button button, test_b;
+    private String name;
+    private TextView textViewName;
     private FirebaseAuth mAuth;
     private LoadingView loadingView;
 
@@ -36,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize root layout and loading view
         ConstraintLayout rootLayout = findViewById(R.id.main);
         loadingView = new LoadingView(this);
-        loadingView.setVisibility(View.VISIBLE); // Show loading view immediately
+        loadingView.setVisibility(View.VISIBLE);
         rootLayout.addView(loadingView);
 
         // Initialize Firebase Auth
@@ -55,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up buttons
         button = findViewById(R.id.button);
+        textViewName = findViewById(R.id.title);
+        UserDataFrom();
 //        test_b = findViewById(R.id.button2);
 
         button.setOnClickListener(view -> {
@@ -69,12 +75,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        test_b.setOnClickListener(v ->startActivity(new Intent(MainActivity.this, test.class)) );
+//        test_b.setOnClickListener(v ->startActivity(new Intent(MainActivity.this, test.class)) );
 
         // Hide the loading view after tasks are completed
         rootLayout.postDelayed(() -> {
             loadingView.setVisibility(View.GONE); // Hide the loading view
             rootLayout.setVisibility(View.VISIBLE); // Show the main content
+            button.setVisibility(View.VISIBLE);
             rootLayout.requestLayout(); // Refresh layout
             rootLayout.invalidate(); // Redraw layout
         }, 2000); // Adjust this delay as needed based on your tasks
@@ -107,5 +114,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void UserDataFrom() {
+        // Get SharedPreferences reference
+        SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
+        name = sharedPreferences.getString("name", "On Food");
 
+        textViewName.setText(name);
+
+
+    }
 }

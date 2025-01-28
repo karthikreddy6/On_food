@@ -51,7 +51,7 @@ public class OrderManager {
         orderDetails.put("amount", totalAmount);
         orderDetails.put("orderDate", formattedDate);
         orderDetails.put("orderTime", formattedTime);
-        orderDetails.put("status","orderd");
+        orderDetails.put("status","confirmed");
 
         // Create a nested map to store items under "items" node
         Map<String, Object> itemsMap = new HashMap<>();

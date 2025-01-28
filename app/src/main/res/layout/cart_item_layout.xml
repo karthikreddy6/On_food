@@ -29,32 +29,31 @@
             android:id="@+id/productDetailsContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cartItemImage"
-            app:layout_constraintEnd_toStartOf="@id/quantityContainer"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/cartItemName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Product Name"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/material_on_surface_emphasis_high_type"
+                android:ellipsize="end"
                 android:maxLines="2"
-                android:ellipsize="end" />
+                android:text="Product Name"
+                android:textColor="@color/material_on_surface_emphasis_high_type"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/cartItemPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="$99.99"
-                android:textSize="18sp"
                 android:textColor="@color/design_default_color_primary"
-                android:layout_marginTop="4dp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <!-- Quantity Controls Container -->

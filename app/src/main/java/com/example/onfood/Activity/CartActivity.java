@@ -89,7 +89,7 @@ private View totalam;
 
     public void displayTotalAmount() {
         double totalAmount = cartManager.getTotalAmount();
-        totalAmountTextView.setText("Total Amount: " + totalAmount);  // Display total amount
+        totalAmountTextView.setText(":₹" + totalAmount);  // Display total amount
     }
 
     private void loadCartItems() {

@@ -87,26 +87,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="12dp"
-                android:gravity="end">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/viewDetailsButton"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/view_details"
-                    android:textColor="@color/primary_color"
-                    android:textSize="14sp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/trackOrderButton"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/track_order"
-                    android:textSize="14sp"/>
-            </LinearLayout>
+                android:gravity="end"/>
         </LinearLayout>
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

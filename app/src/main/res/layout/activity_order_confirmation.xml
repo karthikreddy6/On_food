@@ -33,6 +33,7 @@
                 app:cardElevation="2dp">
 
                 <LinearLayout
+                    android:id="@+id/status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -40,16 +41,18 @@
                     android:padding="24dp">
 
                     <ImageView
+                        android:id="@+id/statusImage"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/tick"
-                        app:tint="@color/green_500" />
+                        android:src="@drawable/ic_cookin"
+                        app:tint="@color/purple_500" />
 
                     <TextView
+                        android:id="@+id/statustittle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Order Confirmed!"
+                        android:text="Order Cooking!"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 

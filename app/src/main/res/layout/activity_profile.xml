@@ -84,7 +84,7 @@
                     android:orientation="horizontal"
                     android:gravity="center"
                     android:padding="16dp"
-                    android:weightSum="3">
+                    >
 
                     <!-- Orders -->
                     <LinearLayout
@@ -108,6 +108,8 @@
                             android:layout_height="wrap_content"
                             android:text="Orders"
                             android:textColor="@color/text_secondary" />
+
+
                     </LinearLayout>
 
 <!--                     Toatal money -->
