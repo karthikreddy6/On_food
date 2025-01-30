@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -197,7 +196,7 @@ public class Authentication extends AppCompatActivity {
                     } else {
                         // Log the full exception to understand which error occurred
                         Exception exception = task.getException();
-                        Log.e("LoginError", "Error: " + exception.getMessage(), exception);
+                        Toast.makeText(Authentication.this, "Login failed: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
                         try {
                             throw exception;
                         } catch (FirebaseAuthInvalidUserException e) {
@@ -246,7 +245,7 @@ public class Authentication extends AppCompatActivity {
         editor.putString("name", name);
         editor.putString("phone", phone);
         editor.apply(); // Commit the changes
-        Log.d("userdata", "saveUserDataLocally: "+userId+name+phone+ email );
+       Toast.makeText(this, name+"login successfully", Toast.LENGTH_SHORT).show();
 
     }
     private void fetchUserDataFromFirestore(String userId) {

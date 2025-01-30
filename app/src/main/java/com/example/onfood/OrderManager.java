@@ -5,6 +5,7 @@ import android.icu.text.SimpleDateFormat;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class OrderManager {
         orderDetails.put("orderDate", formattedDate);
         orderDetails.put("orderTime", formattedTime);
         orderDetails.put("status","confirmed");
+        orderDetails.put("timestamp", ServerValue.TIMESTAMP);
 
         // Create a nested map to store items under "items" node
         Map<String, Object> itemsMap = new HashMap<>();

@@ -36,7 +36,7 @@ public class CartActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private LoadingView loadingView;
     private ConstraintLayout rootLayout;
-private View totalam;
+    private View totalam;
 
 
     @Override
@@ -69,7 +69,6 @@ private View totalam;
         placeorder.setOnClickListener(v -> {
             String userId = currentUser.getUid();  // Get the Firebase User ID (UID)
             setloadindscreen();
-            rmLoadingView();
             // Place the order in Firebase Realtime Database
             orderManager.placeOrder(userId, orderId -> {
                 // Navigate to OrderConfirmationActivity with the order ID
@@ -79,6 +78,7 @@ private View totalam;
                 cartManager.clearCart();
                 startActivity(intent);
                 finish();
+                rmLoadingView();
             });
 
         });

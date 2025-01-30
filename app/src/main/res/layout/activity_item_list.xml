@@ -87,9 +87,10 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/round_curve_cart"
         app:menu="@menu/menu_nav"
         android:elevation="8dp"
+        app:itemIconSize="35dp"
         app:labelVisibilityMode="unlabeled"/>
 
 </LinearLayout>
