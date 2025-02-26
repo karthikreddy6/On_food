@@ -1,5 +1,6 @@
 package com.example.onfood;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> implements CartChangeListener {
@@ -46,7 +48,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
-        private TextView itemName, itemPrice, itemQuantity,itemdescription;
+        private TextView itemName, itemPrice, itemQuantity, itemDescription;
         private ImageView itemImage;
         private Button buttonAddToCart;
 
@@ -56,14 +58,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             itemPrice = itemView.findViewById(R.id.price);
             itemImage = itemView.findViewById(R.id.foodImage);
             itemQuantity = itemView.findViewById(R.id.quantity);
-            itemdescription = itemView.findViewById(R.id.description);
+            itemDescription = itemView.findViewById(R.id.description);
             buttonAddToCart = itemView.findViewById(R.id.addToCart);
         }
 
         public void bind(Item item) {
             itemName.setText(item.getName());
             itemPrice.setText("Price: " + item.getPrice());
-            itemdescription.setText(item.getDescription());
+            itemDescription.setText(item.getDescription());
 
             updateQuantityDisplay(item);
 
@@ -86,7 +88,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
         private void updateQuantityDisplay(Item item) {
             int quantity = cartManager.getItemQuantity(item);
-            itemQuantity.setText("Quantity: " + quantity);
+            int stockQuantity = item.getQuantity();
+
+            if (stockQuantity > 0) {
+                itemQuantity.setText("Quantity: " + quantity);
+                buttonAddToCart.setVisibility(View.VISIBLE);
+                Log.d("ItemAdapter"+item.getName(), "quantity "+quantity);
+            } else {
+                itemQuantity.setText("Out of Stock");
+                buttonAddToCart.setVisibility(View.GONE);
+                Log.d("ItemAdapter"+item.getName(), "quantity "+quantity);
+
+
+            }
         }
     }
 

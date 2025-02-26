@@ -9,10 +9,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class HorizontalItemAdapter extends RecyclerView.Adapter<HorizontalItemAdapter.HorizontalItemViewHolder> implements CartChangeListener {
-
     private List<Item> itemList;
     private CartManager cartManager;
     private ItemAdapter.OnAddToCartListener addToCartListener;
@@ -58,7 +58,7 @@ public class HorizontalItemAdapter extends RecyclerView.Adapter<HorizontalItemAd
 
         public void bind(Item item) {
             itemName.setText(item.getName());
-            itemPrice.setText("Price: $" + item.getPrice());
+            itemPrice.setText("Price: " + item.getPrice());
             Glide.with(itemImage.getContext())
                     .load(item.getImageUrl())
                     .into(itemImage); // Load image using Glide
@@ -76,14 +76,22 @@ public class HorizontalItemAdapter extends RecyclerView.Adapter<HorizontalItemAd
 
         private void updateQuantityDisplay(Item item) {
             int quantity = cartManager.getItemQuantity(item); // Get the current quantity in the cart
-            if (quantity > 0) {
-                itemQuantity.setVisibility(View.VISIBLE);
-                itemQuantity.setText(String.valueOf(quantity)); // Show the quantity
-                addToCartButton.setVisibility(View.GONE); // Hide the Add to Cart button
-            } else {
-                itemQuantity.setVisibility(View.GONE);
-                addToCartButton.setVisibility(View.VISIBLE); // Show the Add to Cart button if not in cart
-            }
+            int stockQuantity = item.getQuantity(); // Assuming you have a method to get stock quantity
+
+           if(stockQuantity <= 0) {
+               addToCartButton.setVisibility(View.GONE);
+               itemQuantity.setText("Out of Stock");
+           }else {
+               if (quantity > 0) {
+                   itemQuantity.setVisibility(View.VISIBLE);
+                   itemQuantity.setText(String.valueOf(quantity)); // Show the quantity
+                   addToCartButton.setVisibility(View.GONE); // Show the Add to Cart button if in stock
+               } else {
+                   itemQuantity.setVisibility(View.GONE);
+                   addToCartButton.setVisibility(View.VISIBLE);
+               }
+           }
+
         }
     }
 

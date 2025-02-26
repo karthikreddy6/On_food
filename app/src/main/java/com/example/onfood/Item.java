@@ -7,6 +7,7 @@ public class Item {
     private String category; // Category field
     private String imageUrl;
     private String description; // New field for description
+    private int quantity; // Field to store the quantity
 
     public Item() {
         // Firestore requires a no-arg constructor
@@ -53,11 +54,28 @@ public class Item {
         this.imageUrl = imageUrl;
     }
 
-    public String getDescription() { // New getter for description
+    public String getDescription() { // Getter for description
         return description;
     }
 
-    public void setDescription(String description) { // New setter for description
+    public void setDescription(String description) { // Setter for description
         this.description = description;
+    }
+
+    public int getQuantity() { // Getter for quantity
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) { // Setter for quantity
+        this.quantity = quantity;
+    }
+
+    public String displayItemDetails() {
+        return "Item ID: " + id + "\n" +
+                "Name: " + name + "\n" +
+                "Price: ₹" + price + "\n" +
+                "Category: " + category + "\n" +
+                "Description: " + description + "\n" +
+                "Quantity: " + quantity; // Display quantity
     }
 }
