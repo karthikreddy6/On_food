@@ -36,33 +36,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Initialize root layout and loading view
-        ConstraintLayout rootLayout = findViewById(R.id.main);
-        loadingView = new LoadingView(this);
-        loadingView.setVisibility(View.VISIBLE);
-        rootLayout.addView(loadingView);
-
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
         // Request notification permission if needed
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (!isNotificationPermissionGranted()) {
                 requestNotificationPermission();
             }
         }
-
         // Check for updates on app start
         VersionChecker versionChecker = new VersionChecker();
         versionChecker.checkForUpdates(this);
-
         // Set up buttons
         button = findViewById(R.id.button);
         textViewName = findViewById(R.id.title);
         UserDataFrom();
 //        test_b = findViewById(R.id.button2);
-
         button.setOnClickListener(view -> {
             FirebaseUser currentUser = mAuth.getCurrentUser();
             if (currentUser != null) {
@@ -77,14 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
 //        test_b.setOnClickListener(v ->startActivity(new Intent(MainActivity.this, test.class)) );
 
-        // Hide the loading view after tasks are completed
-        rootLayout.postDelayed(() -> {
-            loadingView.setVisibility(View.GONE); // Hide the loading view
-            rootLayout.setVisibility(View.VISIBLE); // Show the main content
-            button.setVisibility(View.VISIBLE);
-            rootLayout.requestLayout(); // Refresh layout
-            rootLayout.invalidate(); // Redraw layout
-        }, 2000); // Adjust this delay as needed based on your tasks
     }
 
     private boolean isNotificationPermissionGranted() {

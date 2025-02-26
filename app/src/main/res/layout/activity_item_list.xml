@@ -90,7 +90,7 @@
         android:background="@drawable/round_curve_cart"
         app:menu="@menu/menu_nav"
         android:elevation="8dp"
-        app:itemIconSize="35dp"
+        app:itemIconSize="30dp"
         app:labelVisibilityMode="unlabeled"/>
 
 </LinearLayout>

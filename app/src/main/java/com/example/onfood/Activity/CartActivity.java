@@ -89,7 +89,7 @@ public class CartActivity extends AppCompatActivity {
 
     public void displayTotalAmount() {
         double totalAmount = cartManager.getTotalAmount();
-        totalAmountTextView.setText(":₹" + totalAmount);  // Display total amount
+        totalAmountTextView.setText(" ₹" + totalAmount);  // Display total amount
     }
 
     private void loadCartItems() {

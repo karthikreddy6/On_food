@@ -90,7 +90,16 @@
                     android:textSize="16sp" />
 
             </LinearLayout>
-
+            <TextView
+                android:id="@+id/outOfStockText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Out of Stock"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                android:textAlignment="center"
+                android:visibility="gone" />
             <!-- Add to Cart Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addToCart"

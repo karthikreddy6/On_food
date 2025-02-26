@@ -1,62 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:padding="16dp">
 
-    <!-- App Title -->
-    <TextView
-        android:id="@+id/tvAppTitle"
+    <!-- Button placed above the TextView -->
+    <Button
+        android:id="@+id/buttonOrder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Order Now"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:text="FoodieApp"
-        android:textColor="#FF5722"
-        android:textSize="32sp"
-        android:textStyle="bold" />
+      />
 
-    <!-- Center Container -->
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+    <!-- TextView displaying "Out of Stock" -->
+    <TextView
+        android:id="@+id/textOutOfStock"
+        android:layout_width="141dp"
+        android:visibility="gone"
+        android:layout_height="36dp"
+        android:layout_centerHorizontal="true"
+        android:background="@color/black"
+        android:text="Out of Stock"
+        android:textSize="18sp" />
 
-        <!-- Custom Progress Bar Container -->
-        <FrameLayout
-            android:id="@+id/progressContainer"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_centerInParent="true">
-
-            <!-- Circular Progress Bar -->
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:indeterminateTintMode="src_atop"
-                android:indeterminateTint="#FF5722"/>
-
-            <!-- Food Icon -->
-            <TextView
-                android:id="@+id/tvFoodIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textSize="36sp"
-                android:text="🍕"/>
-        </FrameLayout>
-
-        <!-- Loading Text -->
-        <TextView
-            android:id="@+id/tvLoadingText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/progressContainer"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
-            android:text="Loading..."
-            android:textColor="#757575"
-            android:textSize="16sp"/>
-    </RelativeLayout>
 </RelativeLayout>

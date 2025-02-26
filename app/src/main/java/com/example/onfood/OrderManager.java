@@ -1,6 +1,7 @@
 package com.example.onfood;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
 
 import com.google.firebase.database.DatabaseReference;
@@ -15,18 +16,23 @@ import java.util.Map;
 public class OrderManager {
     private DatabaseReference ordersRef;
     private CartManager cartManager;
-
+    private   SharedPreferences sharedPreferences;
     // Constructor
     public OrderManager(Context context) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ordersRef = database.getReference("Orders");  // Reference to "Orders" node
         cartManager = CartManager.getInstance(context);  // Get CartManager instance
+       sharedPreferences = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
+
     }
 
     // Place order in Firebase Realtime Database
     public void placeOrder(String userId, OnOrderPlacedListener listener) {
         // Generate a unique Order ID
         String orderId = ordersRef.push().getKey();  // Generate unique order ID
+
+        String userName = sharedPreferences.getString("name", "Unknown User");
+        String userPhone = sharedPreferences.getString("phone", "No Phone");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
         SimpleDateFormat TimeFormat = new SimpleDateFormat(" hh.mm a", Locale.getDefault());
@@ -49,6 +55,8 @@ public class OrderManager {
         // Create order details
         Map<String, Object> orderDetails = new HashMap<>();
         orderDetails.put("userId", userId);
+        orderDetails.put("username",userName);
+        orderDetails.put("userPhone",userPhone);
         orderDetails.put("amount", totalAmount);
         orderDetails.put("orderDate", formattedDate);
         orderDetails.put("orderTime", formattedTime);
