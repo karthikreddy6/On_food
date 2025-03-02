@@ -93,11 +93,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             if (stockQuantity > 0) {
                 itemQuantity.setText("Quantity: " + quantity);
                 buttonAddToCart.setVisibility(View.VISIBLE);
-                Log.d("ItemAdapter"+item.getName(), "quantity "+quantity);
+                Log.d("ItemAdapter"+item.getName(), "quantity "+stockQuantity);
             } else {
                 itemQuantity.setText("Out of Stock");
                 buttonAddToCart.setVisibility(View.GONE);
-                Log.d("ItemAdapter"+item.getName(), "quantity "+quantity);
+                Log.d("ItemAdapter"+item.getName(), "quantity "+stockQuantity);
 
 
             }

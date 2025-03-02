@@ -2,6 +2,7 @@ package com.example.onfood.Activity;
 
 import static com.example.onfood.R.id.viewFlipper;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -40,7 +42,7 @@ public class Authentication extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
-
+    private TextView forgotPasswordTextView;
     private EditText emailEditText, passwordEditText, numberEditText, nameEditText;
     private EditText emailRegisterEditText, passwordRegisterEditText;
     private Button loginButton, registerButton, switchToRegisterButton, switchToLoginButton;
@@ -71,10 +73,11 @@ public class Authentication extends AppCompatActivity {
         switchToLoginButton = findViewById(R.id.switchToLoginButton);
         Singuptoogle = findViewById(R.id.Singuptoogle);
         Logintoogle = findViewById(R.id.logintoogle);
-
+        forgotPasswordTextView = findViewById(R.id.forgotPassword);
         // Set onClick listeners
         loginButton.setOnClickListener(v -> loginUser());
         registerButton.setOnClickListener(v -> registerUser());
+        forgotPasswordTextView.setOnClickListener(v -> sendPasswordResetEmail(String.valueOf(emailEditText.getText()), this));
 
         switchToRegisterButton.setOnClickListener(v -> switchToRegister());
         switchToLoginButton.setOnClickListener(v -> switchToLogin());
@@ -129,7 +132,7 @@ public class Authentication extends AppCompatActivity {
             Toast.makeText(Authentication.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        setloadindscreen(); //loading screen start
+        setloadindscreen();
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -145,7 +148,7 @@ public class Authentication extends AppCompatActivity {
                                 .addOnCompleteListener(userTask -> {
                                     if (userTask.isSuccessful()) {
                                         startActivity(new Intent(Authentication.this, ItemListActivity.class));
-                                        saveUserDataLocally(userId,email,name,phone);
+                                        saveUserDataLocally(userId,name,email,phone);
                                         finish(); // Finish the activity
                                     } else {
                                         Toast.makeText(Authentication.this, "Failed to save user info", Toast.LENGTH_SHORT).show();
@@ -178,6 +181,7 @@ public class Authentication extends AppCompatActivity {
     private void loginUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
+
 
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(Authentication.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -245,7 +249,7 @@ public class Authentication extends AppCompatActivity {
         editor.putString("name", name);
         editor.putString("phone", phone);
         editor.apply(); // Commit the changes
-       Toast.makeText(this, name+"login successfully", Toast.LENGTH_SHORT).show();
+       Toast.makeText(this, name+ " login successfully", Toast.LENGTH_SHORT).show();
 
     }
     private void fetchUserDataFromFirestore(String userId) {
@@ -273,8 +277,24 @@ public class Authentication extends AppCompatActivity {
                     showSnackbar("Failed to fetch user data. Please try again.");
                 });
     }
+    public void sendPasswordResetEmail(String email, Context context) {
+        setloadindscreen();
+        if (email.isEmpty()) {
+            Toast.makeText(context, "Please enter your email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(context, "Reset email sent. Check your inbox.", Toast.LENGTH_LONG).show();
+                        rmLoadingView();
+                    } else {
+                        Toast.makeText(context, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        rmLoadingView();
+                    }
+                });
 
-
+    }
 
 
 }
