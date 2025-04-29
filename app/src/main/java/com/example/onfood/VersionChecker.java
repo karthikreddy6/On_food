@@ -62,7 +62,7 @@ public class VersionChecker {
                 .setPositiveButton("Update", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Open the update URL in a browser or handle it accordingly
-                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl)));
+                        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl)));
                         System.out.println("Redirecting to update URL: " + updateUrl);
                     }
                 })

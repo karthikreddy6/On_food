@@ -14,12 +14,16 @@ public class CartManager {
     private static final String CART_PREFS = "cart_prefs";
     private SharedPreferences sharedPreferences;
     private Gson gson = new Gson();
-    private static CartManager instance;
+    private static volatile CartManager instance;
     private List<CartChangeListener> listeners = new ArrayList<>();
 
-    public static synchronized CartManager getInstance(Context context) {
+    public static CartManager getInstance(Context context) {
         if (instance == null) {
-            instance = new CartManager(context);
+            synchronized (CartManager.class) {
+                if (instance == null) {
+                    instance = new CartManager(context);
+                }
+            }
         }
         return instance;
     }
@@ -42,92 +46,96 @@ public class CartManager {
         }
     }
 
-    public void addToCart(Item item) {
+    public synchronized void addToCart(Item item) {
         String itemId = item.getId();
         Map<String, CartItem> cart = getCartItemsWithQuantities();
 
-        if (cart.containsKey(itemId)) {
-            CartItem cartItem = cart.get(itemId);
-            cartItem.setQuantity(cartItem.getQuantity() + 1);
-        } else {
-            cart.put(itemId, new CartItem(item, 1));
-        }
+        cart.put(itemId, cart.getOrDefault(itemId, new CartItem(item, 0)));
+        cart.get(itemId).setQuantity(cart.get(itemId).getQuantity() + 1);
 
         saveCart(cart);
-        notifyCartChange(); // Notify listeners
+        notifyCartChange();
     }
 
-    public void increaseItemQuantity(Item item) {
+    public synchronized void increaseItemQuantity(Item item) {
         String itemId = item.getId();
         Map<String, CartItem> cart = getCartItemsWithQuantities();
 
+
         if (cart.containsKey(itemId)) {
-            CartItem cartItem = cart.get(itemId);
-            cartItem.setQuantity(cartItem.getQuantity() + 1);
+            cart.get(itemId).setQuantity(cart.get(itemId).getQuantity() + 1);
             saveCart(cart);
-            notifyCartChange(); // Notify listeners
+            notifyCartChange();
         }
     }
 
-    public void decreaseItemQuantity(Item item) {
+    public synchronized void decreaseItemQuantity(Item item) {
         String itemId = item.getId();
         Map<String, CartItem> cart = getCartItemsWithQuantities();
 
         if (cart.containsKey(itemId)) {
-            CartItem cartItem = cart.get(itemId);
-            if (cartItem.getQuantity() > 1) {
-                cartItem.setQuantity(cartItem.getQuantity() - 1);
+            if (cart.get(itemId).getQuantity() > 1) {
+                cart.get(itemId).setQuantity(cart.get(itemId).getQuantity() - 1);
             } else {
                 cart.remove(itemId);
             }
             saveCart(cart);
-            notifyCartChange(); // Notify listeners
+            notifyCartChange();
         }
     }
 
-    public void removeItemFromCart(Item item) {
+    public synchronized void removeItemFromCart(Item item) {
         String itemId = item.getId();
         Map<String, CartItem> cart = getCartItemsWithQuantities();
         if (cart.containsKey(itemId)) {
             cart.remove(itemId);
             saveCart(cart);
-            notifyCartChange(); // Notify listeners
+            notifyCartChange();
         }
     }
 
-    public void clearCart() {
-        sharedPreferences.edit().remove("cart_items").apply(); // Clear the cart
-        notifyCartChange(); // Notify listeners
+    public synchronized void clearCart() {
+        sharedPreferences.edit().clear().apply();
+        notifyCartChange();
     }
 
     public double getTotalAmount() {
-        Map<String, CartItem> cartItems = getCartItemsWithQuantities();
         double totalAmount = 0.0;
-
-        for (CartItem cartItem : cartItems.values()) {
+        for (CartItem cartItem : getCartItemsWithQuantities().values()) {
             totalAmount += cartItem.getItem().getPrice() * cartItem.getQuantity();
         }
-
-        return totalAmount; // Return the total amount
+        return totalAmount;
     }
 
     public Map<String, CartItem> getCartItemsWithQuantities() {
         String cartJson = sharedPreferences.getString("cart_items", "");
-        if (!cartJson.isEmpty()) {
-            Type type = new TypeToken<Map<String, CartItem>>() {}.getType();
-            return gson.fromJson(cartJson, type);
-        }
-        return new HashMap<>();  // Return empty cart if no items found
+        return cartJson.isEmpty() ? new HashMap<>() : gson.fromJson(cartJson, new TypeToken<Map<String, CartItem>>() {}.getType());
     }
 
     private void saveCart(Map<String, CartItem> cart) {
-        String cartJson = gson.toJson(cart);
-        sharedPreferences.edit().putString("cart_items", cartJson).apply();
+        if (cart.isEmpty()) {
+            sharedPreferences.edit().remove("cart_items").apply();
+        } else {
+            sharedPreferences.edit().putString("cart_items", gson.toJson(cart)).apply();
+        }
     }
-
     public int getItemQuantity(Item item) {
         String itemId = item.getId();
         Map<String, CartItem> cart = getCartItemsWithQuantities();
         return cart.containsKey(itemId) ? cart.get(itemId).getQuantity() : 0;
+    }
+    public void updateItemQuantity(Item item, int quantity) {
+        String itemId = item.getId();
+        Map<String, CartItem> cart = getCartItemsWithQuantities();
+
+        if (cart.containsKey(itemId)) {
+            CartItem cartItem = cart.get(itemId);
+            if (quantity > 0) { // Only update if quantity is positive
+                cartItem.setQuantity(quantity);
+            } else {
+                cart.remove(itemId); // Remove item if quantity is 0 or less
+            }
+            saveCart(cart);
+        }
     }
 }

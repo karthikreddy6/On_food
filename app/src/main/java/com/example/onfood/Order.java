@@ -5,12 +5,14 @@ public class Order {
     private double amount;
     private String orderDate;
     private String orderTime;
+    private String status;
 
-    public Order(String orderId, double amount, String orderDate, String orderTime) {
+    public Order(String orderId, String orderDate, String orderTime, double amount, String status) {
         this.orderId = orderId;
-        this.amount = amount;
         this.orderDate = orderDate;
         this.orderTime = orderTime;
+        this.amount = amount;
+        this.status = (status != null) ? status : "Unknown"; // Ensure status is never null
     }
 
     public String getOrderId() {
@@ -28,4 +30,6 @@ public class Order {
     public String getOrderTime() {
         return orderTime;
     }
+    public String getStatus() { return status; }
+
 }

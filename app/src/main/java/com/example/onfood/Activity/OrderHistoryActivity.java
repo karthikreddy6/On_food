@@ -72,8 +72,9 @@ public class OrderHistoryActivity extends AppCompatActivity {
                     double amount = orderSnapshot.child("amount").getValue(Double.class);
                     String date = orderSnapshot.child("orderDate").getValue(String.class);
                     String time = orderSnapshot.child("orderTime").getValue(String.class);
+                    String status = orderSnapshot.child("status").getValue(String.class);
 
-                    Order order = new Order(orderId, amount, date, time);
+                    Order order = new Order(orderId,date, time,amount,status);
                     orderList.add(order);
                 }
 

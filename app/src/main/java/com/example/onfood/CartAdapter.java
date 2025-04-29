@@ -74,13 +74,19 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                     .error(R.drawable.ic_cart)        // Set an error image
                     .into(imageView);
 
-
-            // Handle increasing the quantity
             buttonIncreaseQuantity.setOnClickListener(v -> {
-                cartManager.increaseItemQuantity(item);
-                cartItem.setQuantity(cartItem.getQuantity() + 1);
-                notifyItemChanged(getAdapterPosition());
-                cartActivity.displayTotalAmount(); // Update total amount in CartActivity
+                int currentQuantity = cartItem.getQuantity();
+                int stockQuantity = item.getQuantity();
+
+                // Check if we can increase the quantity
+                if (currentQuantity < stockQuantity) {
+                    cartManager.increaseItemQuantity(item);
+                    cartItem.setQuantity(currentQuantity + 1);
+                    notifyItemChanged(getAdapterPosition());
+                    cartActivity.displayTotalAmount(); // Update total amount in CartActivity
+                } else {
+                    Toast.makeText(v.getContext(), "Stock limit reached!", Toast.LENGTH_SHORT).show();
+                }
             });
 
             // Handle decreasing the quantity

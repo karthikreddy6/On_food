@@ -4,9 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -16,13 +22,14 @@ import java.util.Map;
 public class OrderManager {
     private DatabaseReference ordersRef;
     private CartManager cartManager;
-    private   SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
+
     // Constructor
     public OrderManager(Context context) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ordersRef = database.getReference("Orders");  // Reference to "Orders" node
         cartManager = CartManager.getInstance(context);  // Get CartManager instance
-       sharedPreferences = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
 
     }
 
@@ -55,12 +62,12 @@ public class OrderManager {
         // Create order details
         Map<String, Object> orderDetails = new HashMap<>();
         orderDetails.put("userId", userId);
-        orderDetails.put("username",userName);
-        orderDetails.put("userPhone",userPhone);
+        orderDetails.put("username", userName);
+        orderDetails.put("userPhone", userPhone);
         orderDetails.put("amount", totalAmount);
         orderDetails.put("orderDate", formattedDate);
         orderDetails.put("orderTime", formattedTime);
-        orderDetails.put("status","confirmed");
+        orderDetails.put("status", "confirmed");
         orderDetails.put("timestamp", ServerValue.TIMESTAMP);
 
         // Create a nested map to store items under "items" node
@@ -85,6 +92,7 @@ public class OrderManager {
                 .addOnSuccessListener(aVoid -> {
                     // Successfully stored the order
                     System.out.println("Order placed successfully!");
+                    updateItemQuantities(cartItems);
                     listener.onOrderPlaced(orderId);  // Notify listener with order ID
                 })
                 .addOnFailureListener(e -> {
@@ -97,4 +105,59 @@ public class OrderManager {
     public interface OnOrderPlacedListener {
         void onOrderPlaced(String orderId);
     }
+    private void updateItemQuantities(Map<String, CartItem> cartItems) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        CollectionReference itemsRef = firestore.collection("MenuItem");
+
+        for (Map.Entry<String, CartItem> entry : cartItems.entrySet()) {
+            String itemId = entry.getKey();
+            CartItem cartItem = entry.getValue();
+
+            System.out.println("🛠️ Attempting to update item: " + itemId);
+
+            // Get the document reference for the specific item
+            DocumentReference itemDocRef = itemsRef.document(itemId);
+
+            itemDocRef.get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        System.out.println("📥 Firestore returned data for item: " + itemId);
+
+                        if (documentSnapshot.exists()) {
+                            Long currentQuantity = documentSnapshot.getLong("quantity"); // Retrieve quantity field as Long
+
+                            if (currentQuantity != null) {
+                                System.out.println("✅ Current stock: " + currentQuantity);
+                                System.out.println("🛠️ Raw data retrieved for item: " + itemId + " - " + documentSnapshot.getData());
+
+                                System.out.println("🛒 Quantity ordered: " + cartItem.getQuantity());
+
+                                long newQuantity = currentQuantity - cartItem.getQuantity();
+                                System.out.println("📦 New quantity to set: " + newQuantity);
+
+                                if (newQuantity >= 0) {
+                                    // Update the quantity in Firestore
+                                    itemDocRef.update("quantity", newQuantity)
+                                            .addOnSuccessListener(aVoid -> {
+                                                System.out.println("✅ Quantity updated successfully for item: " + itemId);
+                                                cartManager.updateItemQuantity(cartItem.getItem(), (int) newQuantity);
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                System.err.println("❌ Failed to update quantity for item: " + itemId + ". Error: " + e.getMessage());
+                                            });
+                                } else {
+                                    System.err.println("⚠️ Not enough stock to fulfill order for item: " + itemId);
+                                }
+                            } else {
+                                System.err.println("⚠️ Quantity field is null for item: " + itemId);
+                            }
+                        } else {
+                            System.err.println("⚠️ Document doesn't exist for item: " + itemId);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        System.err.println("🔥 Firestore query failed for item: " + itemId + ". Error: " + e.getMessage());
+                    });
+        }
+    }
+
 }

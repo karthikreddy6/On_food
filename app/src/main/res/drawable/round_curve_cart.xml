@@ -2,9 +2,9 @@
     <solid android:color="#EF927A"/> <!-- Background color (orange) -->
 
     <corners
-        android:topLeftRadius="40dp"
-        android:topRightRadius="40dp"
-        android:bottomLeftRadius="0dp"
-        android:bottomRightRadius="0dp"/> <!-- Unequal corner radius -->
+        android:topLeftRadius="20dp"
+        android:topRightRadius="20dp"
+        android:bottomLeftRadius="10dp"
+        android:bottomRightRadius="10dp"/> <!-- Unequal corner radius -->
 
 </shape>
