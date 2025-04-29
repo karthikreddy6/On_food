@@ -1,11 +1,8 @@
 package com.example.onfood.Activity;
 
-import static com.example.onfood.R.id.buttonBack;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -74,7 +71,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
                     String time = orderSnapshot.child("orderTime").getValue(String.class);
                     String status = orderSnapshot.child("status").getValue(String.class);
 
-                    Order order = new Order(orderId,date, time,amount,status);
+                    Order order = new Order(orderId, date, time, amount, status);
                     orderList.add(order);
                 }
 

@@ -79,6 +79,7 @@
                 app:cardElevation="4dp">
 
                 <LinearLayout
+                    android:id="@+id/orderDetailsLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -188,6 +189,7 @@
 
                     <!-- Personal Information -->
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/personalInfoButton"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -197,6 +199,7 @@
 
                     <!-- Payment Methods -->
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/paymentMethodsButton"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

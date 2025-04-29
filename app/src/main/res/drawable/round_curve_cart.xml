@@ -1,10 +1,10 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#EF927A"/> <!-- Background color (orange) -->
+    <solid android:color="#A48181"/> <!-- Background color (orange) -->
 
     <corners
         android:topLeftRadius="20dp"
         android:topRightRadius="20dp"
-        android:bottomLeftRadius="10dp"
-        android:bottomRightRadius="10dp"/> <!-- Unequal corner radius -->
+        android:bottomLeftRadius="3dp"
+        android:bottomRightRadius="3dp"/> <!-- Unequal corner radius -->
 
 </shape>

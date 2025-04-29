@@ -19,7 +19,6 @@ import com.example.onfood.R;
 import com.example.onfood.VersionChecker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Check for app updates
-        VersionChecker versionChecker = new VersionChecker();
-        versionChecker.checkForUpdates(this);
+        VersionChecker versionChecker = new VersionChecker(this);
+        versionChecker.checkForUpdates();
 
         // Set up UI elements
         button = findViewById(R.id.button);

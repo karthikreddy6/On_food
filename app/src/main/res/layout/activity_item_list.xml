@@ -11,7 +11,7 @@
         android:id="@+id/navigationBar"
         layout="@layout/navigation_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_gravity="top"
         app:layout_collapseMode="pin" />
 
@@ -88,6 +88,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/round_curve_cart"
+        app:itemIconTint="@color/nav_item_color_selector"
+    app:itemTextColor="@color/nav_item_color_selector"
         app:menu="@menu/menu_nav"
         android:elevation="8dp"
         app:itemIconSize="30dp"

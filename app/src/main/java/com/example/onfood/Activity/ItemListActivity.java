@@ -147,7 +147,7 @@ public class ItemListActivity extends AppCompatActivity implements ItemAdapter.O
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_home) {
-                return true;
+                return false;
             } else if (itemId == R.id.navigation_cart) {
                 gotoChart();
                 return false;

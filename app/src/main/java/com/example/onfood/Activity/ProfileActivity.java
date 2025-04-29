@@ -7,7 +7,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,12 +31,18 @@ public class ProfileActivity extends AppCompatActivity {
     private String name,phone,userId ;
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
-
+    private LinearLayout orederLayout;
+    private Button editProfile, personalDetails,paymentDetails;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        editProfile = findViewById(R.id.editProfileButton);
+        personalDetails = findViewById(R.id.personalInfoButton);
+        paymentDetails = findViewById(R.id.paymentMethodsButton);
+
+        orederLayout =findViewById(R.id.orderDetailsLayout);
         textView_totalAmount = findViewById(R.id.Total_amount_TextView);
         textView_orderCount = findViewById(R.id.ordersCountTextView);
         textViewName = findViewById(R.id.textViewName);
@@ -42,15 +50,21 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
+        editProfile.setOnClickListener(v -> {Udtost();});
+paymentDetails.setOnClickListener(v -> {Udtost();});
+personalDetails.setOnClickListener(v -> {Udtost();});
         // In OrderConfirmationActivity.java
         ImageButton buttonBack = findViewById(R.id.buttonBack);
-        ImageButton buttonCart = findViewById(R.id.buttonCart);
         ImageButton buttonLogOut =findViewById(R.id.Logout);
         TextView navText =findViewById(R.id.navtext);
 
         navText.setText("Profile");
         buttonLogOut.setOnClickListener(v-> logoutUser());
         buttonBack.setOnClickListener(v -> onBackPressed());
+        orederLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, OrderHistoryActivity.class);
+            startActivity(intent);
+        });
 
 // Hide profile button in this activity
         buttonBack.setVisibility(View.VISIBLE);
@@ -118,6 +132,10 @@ public class ProfileActivity extends AppCompatActivity {
          calculateUserOrderSummary(userId);
 
 
+
+    }
+    private  void Udtost(){
+        Toast.makeText(this, "This function will be available sooner", Toast.LENGTH_SHORT).show();
 
     }
 

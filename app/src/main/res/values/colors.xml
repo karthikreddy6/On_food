@@ -27,6 +27,8 @@
     <color name="status_cancelled">#F44336</color> <!-- Red -->
     <color name="status_unknown">#808080</color> <!-- Gray -->
     <color name="yelloorange">#FF9800</color>
+        <color name="colorSelected">#EF927A</color>     <!-- Red for selected items -->
+        <color name="colorUnselected">#CCCCCC</color>    <!-- Gray for unselected items -->
 
 
 
