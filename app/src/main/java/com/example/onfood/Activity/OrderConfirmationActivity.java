@@ -42,6 +42,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         // Initialize UI components
         ImageButton buttonBack = findViewById(R.id.buttonBack);
         ImageButton buttonCart = findViewById(R.id.buttonCart);
+        ImageButton buttonhelp = findViewById(R.id.help);
         TextView navText = findViewById(R.id.navtext);
         navText.setText("ORDER STATUS");
 
@@ -60,7 +61,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
         buttonBack.setVisibility(View.VISIBLE);
         buttonCart.setVisibility(View.VISIBLE);
-
+        buttonhelp.setVisibility(View.VISIBLE);
         // Status UI components
         orderStatusImg1 = findViewById(R.id.confirmedStatusImageView1);
         orderStatusImg2 = findViewById(R.id.confirmedStatusImageView2);

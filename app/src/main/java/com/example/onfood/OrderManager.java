@@ -1,9 +1,13 @@
 package com.example.onfood;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
 
+import androidx.core.content.ContextCompat;
+
+import com.example.onfood.services.OrderStatusService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,9 +27,12 @@ public class OrderManager {
     private DatabaseReference ordersRef;
     private CartManager cartManager;
     private SharedPreferences sharedPreferences;
+    private Context context;
 
     // Constructor
     public OrderManager(Context context) {
+        this.context = context.getApplicationContext(); // Store application context
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ordersRef = database.getReference("Orders");  // Reference to "Orders" node
         cartManager = CartManager.getInstance(context);  // Get CartManager instance
@@ -37,6 +44,8 @@ public class OrderManager {
     public void placeOrder(String userId, OnOrderPlacedListener listener) {
         // Generate a unique Order ID
         String orderId = ordersRef.push().getKey();  // Generate unique order ID
+
+        sharedPreferences.edit().putString("latestOrderId", orderId).apply();
 
         String userName = sharedPreferences.getString("name", "Unknown User");
         String userPhone = sharedPreferences.getString("phone", "No Phone");
@@ -92,14 +101,27 @@ public class OrderManager {
                 .addOnSuccessListener(aVoid -> {
                     // Successfully stored the order
                     System.out.println("Order placed successfully!");
-                    updateItemQuantities(cartItems);
+                    sharedPreferences.edit().putString("latestOrderId", orderId).apply();
+
                     listener.onOrderPlaced(orderId);  // Notify listener with order ID
+                    activateOrderStatusService(orderId);
+                    updateItemQuantities(cartItems);
+
                 })
                 .addOnFailureListener(e -> {
                     // Failed to store the order
                     System.err.println("Error placing order: " + e.getMessage());
                 });
+
     }
+    public String getLatestOrderId() {
+        return sharedPreferences.getString("latestOrderId", null);
+    }
+    public void updateOrder(String orderId, String newStatus) {
+        ordersRef.child(orderId).child("status").setValue(newStatus);
+        // Additional order update logic here...
+    }
+
 
     // Define interface for order placed listener
     public interface OnOrderPlacedListener {
@@ -159,5 +181,11 @@ public class OrderManager {
                     });
         }
     }
+    private void activateOrderStatusService(String orderId) {
+        Intent serviceIntent = new Intent(context, OrderStatusService.class);
+        serviceIntent.putExtra("ORDER_ID", orderId);
+        ContextCompat.startForegroundService(context, serviceIntent);
+    }
+
 
 }

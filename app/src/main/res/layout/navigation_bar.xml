@@ -123,6 +123,17 @@
                 android:src="@drawable/ic_logout"
                 android:visibility="gone"
                 app:tint="@color/white" />
+            <ImageButton
+                android:id="@+id/help"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/ripple_circular"
+                android:contentDescription="@string/Logout"
+                android:padding="12dp"
+                android:src="@drawable/ic_help"
+                android:visibility="gone"
+                app:tint="@color/white" />
         </LinearLayout>
 
     </RelativeLayout>
